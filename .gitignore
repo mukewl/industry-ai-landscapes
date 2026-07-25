@@ -1,0 +1,22 @@
+# NOTE: unlike the travel reference project, the workbooks (*.xlsx) ARE committed here —
+# they are the collaboratively-built source of truth and the repo is their backup.
+
+# Regenerable per-industry extracts (keep relationships_manual.json when it appears)
+industries/*/data/companies.json
+industries/*/data/support_sheets.json
+industries/*/data/extract_meta.json
+industries/*/data/relationships.json
+industries/*/data/scenarios/
+
+# Workbook backups & scratch
+backups/
+~$*.xlsx
+
+# Session-local
+.claude/
+
+# Python / Node
+__pycache__/
+*.py[cod]
+.env
+node_modules/

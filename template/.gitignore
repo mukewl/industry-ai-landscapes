@@ -1,0 +1,22 @@
+# Source data — large / proprietary
+*.xlsx
+*.xls
+backups/
+
+# Machine-generated data (embedded in dashboard.html already)
+data/companies.json
+data/relationships.json
+data/world_110m.json
+data/support_sheets.json
+data/extract_meta.json
+
+# Claude Code session files
+.claude/
+
+# Python
+__pycache__/
+*.py[cod]
+.env
+
+# Node
+node_modules/
