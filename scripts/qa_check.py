@@ -127,9 +127,12 @@ def main():
         spread = max(epis) - min(epis)
         print(f"       EPI min {min(epis):.0f} / mean {sum(epis)/len(epis):.0f} / max {max(epis):.0f}")
         print(f"       tiers {dict(tiers)}  quadrants {dict(quads)}")
-        check("EPI spread is meaningful", spread >= 25, f"spread only {spread:.0f} pts — scores may be compressed", warn=True)
-        check("not everything is High tier", tiers.get("High", 0) <= len(epis) * 0.6,
-              f"{tiers.get('High', 0)}/{len(epis)} High — check for score inflation", warn=True)
+        ok_spread = spread >= 25
+        check("EPI spread is meaningful", ok_spread,
+              f"{spread:.0f} pts" + ("" if ok_spread else " — scores may be compressed"), warn=True)
+        ok_tiers = tiers.get("High", 0) <= len(epis) * 0.6
+        check("not everything is High tier", ok_tiers,
+              f"{tiers.get('High', 0)}/{len(epis)} High" + ("" if ok_tiers else " — check for score inflation"), warn=True)
 
     # 7. anchor drift
     anchors_file = ROOT / "industries" / industry / "anchors.md"

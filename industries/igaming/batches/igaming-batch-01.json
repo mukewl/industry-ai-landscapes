@@ -1,0 +1,1170 @@
+{
+ "industry": "igaming",
+ "rows": [
+  {
+   "name": "Flutter Entertainment plc",
+   "sector": "Operator (B2C)",
+   "founded": 2016,
+   "hq": "Dublin, Ireland (primary listing NYSE since 2024/25 redomicile)",
+   "ftes": null,
+   "verticals": [
+    "Sportsbook",
+    "Casino and slots",
+    "Live casino",
+    "Poker and bingo",
+    "Lottery and emerging"
+   ],
+   "value_chain": [
+    "Discover",
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "customer_base_segment": "B2C — mass-market sports bettors and casino players across US, UK/Ireland, Italy, Australia, Brazil, India and other markets",
+   "business_model_notes": "Multi-brand global sportsbook/casino operator (FanDuel US; Paddy Power, Betfair, Sky Bet UK; Sisal Italy; PokerStars; Junglee Games) monetizing GGR; expanding into CFTC-regulated prediction markets via the FanDuel Predicts joint venture with CME Group.",
+   "direct_channel": "y",
+   "merchant_of_record": "y",
+   "api_commerce_ready": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "customer_facing_ai_assistant": "n",
+   "is_ai_the_core_focus": "n",
+   "foundation_model_approach": "Proprietary quant pricing/risk models, now commercialized to third parties; no evidence of frontier LLM training",
+   "agentic_maturity_layer": "L1",
+   "gen_ai_platform_partnerships": null,
+   "existing_partnerships": "CME Group (FanDuel Predicts JV)",
+   "proprietary_data_advantage": "15.9M average monthly players across a global multi-vertical footprint; proprietary pricing/risk tech now sold as a B2B service",
+   "licensed_jurisdictions": "US (multi-state via FanDuel), UK, Ireland, Italy, Australia, Brazil, India, plus Malta/Gibraltar point-of-supply licences",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": "Standard safer-gambling tools (deposit/loss limits, self-exclusion) as a licence condition across brands; not independently verified this session",
+   "crypto_accepted": null,
+   "total_funding_mn": null,
+   "market_cap_valuation_mn": 18130,
+   "revenue_traction": "$18.4B FY2025 revenue (+19% YoY), adjusted EBITDA $2.97B, net loss $407M on a $556M non-cash India regulatory impairment",
+   "survival_tier": "Strong",
+   "horizon": "0-12m",
+   "w": [
+    4,
+    4,
+    4,
+    5,
+    5
+   ],
+   "w_notes": [
+    "FanDuel Predicts/One App repositions strategy around owned demand",
+    "≈$300M FanDuel Predicts investment plus CME JV, One App build",
+    "CME Group JV reaches 40% of underserved US population",
+    "FanDuel One App live Apr 2026: unified sportsbook+predictions+casino surface",
+    "15.9M monthly players; 43% US sportsbook share, dominant app reach"
+   ],
+   "d": [
+    5,
+    5,
+    5,
+    3,
+    5,
+    5
+   ],
+   "d_notes": [
+    "Sportsbook, casino, poker (PokerStars), lottery across multiple leading brands",
+    "Proprietary pricing/risk tech now commercialized to third-party prediction venues",
+    "Multi-jurisdiction: US states, UK, Ireland, Italy, Australia, Brazil, India",
+    "Payments infra not publicly confirmed as owned MoR at scale",
+    "$18.4B FY25 revenue, global multi-brand footprint, millions of actives",
+    "FanDuel #1 US brand; Paddy Power/Betfair trusted UK heritage brands"
+   ],
+   "ai": [
+    3,
+    1,
+    0,
+    2,
+    4,
+    5,
+    3
+   ],
+   "ai_notes": [
+    "Proprietary pricing/risk models sold to third parties; no confirmed frontier LLMs",
+    "No shipped autonomous betting agent found; personalization tools only",
+    "No MCP/A2A/UCP/ACP adoption evidence found",
+    "Bet Protect+ AI promo tool shipped; no full chat assistant",
+    "Bet Protect+ adoption 2x forecast; predictive analytics across brands",
+    "15.9M actives, multi-vertical global data now sold as B2B service",
+    "Sells pricing/risk tech to CME-linked prediction venues as provider"
+   ],
+   "f": [
+    4,
+    4,
+    5,
+    2,
+    5
+   ],
+   "f_notes": [
+    "Adj EBITDA $2.97B FY25, strong operating cash generation, well-funded",
+    "$18.4B revenue +19%, but $407M net loss from India impairment",
+    "Scaled, cash-generative multinational operator; no near-term funding risk",
+    "Comparison source cites Flutter's ~$10.6bn net debt as leveraged",
+    "NYSE/LSE dual-listed large-cap; proven access to capital markets"
+   ],
+   "evidence_links": [
+    "https://www.globenewswire.com/news-release/2026/02/26/3246102/0/en/flutter-entertainment-reports-fourth-quarter-and-full-year-2025-financial-results.html",
+    "https://infotechlead.com/gaming/flutter-accelerates-ai-driven-betting-tech-and-fanduel-one-app-strategy-in-2026-95681",
+    "https://flutter.com/news-media/blogs/huddle-up-recap-inside-fanduel-s-50-billion-playbook/",
+    "https://www.covers.com/industry/fanduel-again-tops-sportsbook-q2-earnings-august-11-2025"
+   ],
+   "evidence_notes": "Strong recent disclosure via SEC 8-K/earnings releases and multiple corroborating trade press; AI-specific claims (foundation model depth, agentic maturity) inferred from limited product detail.",
+   "confidence": "high",
+   "impact_on_incumbent_line": "As the largest incumbent operator itself, Flutter is racing to build the owned player-surface (FanDuel One App) that other operators must now match or fall behind.",
+   "residual_gap": "No shipped agentic/conversational betting assistant yet; still funds significant paid acquisition alongside owned app growth.",
+   "notes": "Legal entity Flutter Entertainment plc (NYSE primary listing, formerly Paddy Power Betfair plc, renamed 2019). FanDuel (US), Paddy Power, Betfair, Sky Bet (UK), Sisal (Italy), PokerStars, Junglee Games, Adjarabet and Betnacional are brands/subsidiaries, not separate legal entities — scored at Flutter parent level. FanDuel Predicts is a JV with CME Group, not wholly owned. Serves as one of the batch's calibration anchors (frame.md expected shape: high W, high D, high-mid AI -> Imminent threat) — scores here effectively establish that anchor pending anchors.md."
+  },
+  {
+   "name": "Betsson AB (publ)",
+   "sector": "Operator (B2C)",
+   "founded": 1963,
+   "hq": "Stockholm, Sweden (group operations via Malta)",
+   "ftes": null,
+   "verticals": [
+    "Sportsbook",
+    "Casino and slots",
+    "Live casino"
+   ],
+   "value_chain": [
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "customer_base_segment": "B2C — sports bettors and casino players, strongest in Nordics, Latin America (Brazil, Paraguay, Argentina) and other European markets",
+   "business_model_notes": "Multi-brand online sportsbook/casino operator (Betsafe, Betsson.com, Rizk, NordicBet and others) monetizing GGR, with a growing share of revenue from newly locally-regulated markets, plus a smaller B2B platform business.",
+   "direct_channel": "n",
+   "merchant_of_record": "y",
+   "api_commerce_ready": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "customer_facing_ai_assistant": "y",
+   "is_ai_the_core_focus": "n",
+   "foundation_model_approach": "External vendor AI (Ada) for customer-service chat; no evidence of own model development",
+   "agentic_maturity_layer": "L1",
+   "gen_ai_platform_partnerships": null,
+   "existing_partnerships": "Ada (AI chatbot platform vendor)",
+   "proprietary_data_advantage": "600k+ active customers across 24 licensed markets; standard transactional/CRM data, no described data moat",
+   "licensed_jurisdictions": "24 licensed markets including Sweden and other Nordics, Brazil, Paraguay, Argentina, and various EU jurisdictions",
+   "regulated_revenue_pct": 68,
+   "responsible_gambling_stance": "Standard safer-gambling tools tied to licence conditions across its 24 regulated markets; not independently verified this session",
+   "crypto_accepted": null,
+   "total_funding_mn": null,
+   "market_cap_valuation_mn": 2160,
+   "revenue_traction": "Record €1.197B FY2025 revenue (+8% YoY), EBITDA €313.7M (margin 26.2%, down from 28.6%), net income €182.4M",
+   "survival_tier": "Stable",
+   "horizon": "3y+",
+   "w": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "w_notes": [
+    "Content with current model; AI framed as efficiency, not acquisition disruption",
+    "M&A (Rhino Canada, Sporting Solutions) targets scale, not AI/wallet disruption",
+    "Ada is a vendor relationship, not a distribution alliance",
+    "Only shipped experiment: Ada AI customer-service chatbot across brands",
+    "600k+ actives acquired via conventional brand/affiliate marketing, not owned intent"
+   ],
+   "d": [
+    3,
+    4,
+    4,
+    3,
+    4,
+    3
+   ],
+   "d_notes": [
+    "Multi-brand sportsbook/casino; content largely licensed-in from B2B suppliers",
+    "Own proprietary tech platform cited as top strategic priority",
+    "24 licensed markets; 68% of revenue now locally regulated",
+    "Payments via partner rails; no confirmed owned MoR status",
+    "€1.197B revenue, LatAm+Nordics+EU footprint, record local-licence share",
+    "Respected mid-tier brand in core markets, not globally top-of-mind"
+   ],
+   "ai": [
+    2,
+    1,
+    0,
+    3,
+    2,
+    2,
+    1
+   ],
+   "ai_notes": [
+    "Uses third-party AI platform (Ada) for chatbots; no own models found",
+    "Self-serve chatbot only; no autonomous transaction capability shown",
+    "No agent-commerce protocol adoption evidence found",
+    "Ada chatbots serve 600k+ actives in 8 languages, 24/7",
+    "Predictive tools for CRM/bonusing mentioned; no individual-level detail found",
+    "Standard transactional/CRM data; no described proprietary data moat",
+    "Pure consumer of vendor AI (Ada); no platform position"
+   ],
+   "f": [
+    4,
+    4,
+    5,
+    3,
+    4
+   ],
+   "f_notes": [
+    "EBITDA €313.7M FY25; profitable, no funding gap evident",
+    "Record €1.197B revenue +8%; EBITDA margin dipped to 26.2%",
+    "Consistently profitable, self-funding operator; no runway concern",
+    "No explicit leverage data found; small M&A self-funded in cash",
+    "Nasdaq Stockholm listed; established public capital-market access"
+   ],
+   "evidence_links": [
+    "https://gamblersconnect.com/news/finance/betsson-2025-annual-report/",
+    "https://next.io/news/technology/betsson-fredrik-ogren-cleber-de-lima-interview-ai-adoption/",
+    "https://www.digitaljournal.com/article/betsson-drives-customer-service-with-ada-ai-powered-chatbots/",
+    "https://www.betssonab.com/about-us/strategy"
+   ],
+   "evidence_notes": "Financials well-documented via annual/year-end report; willingness and AI-depth signals rely on thinner trade-press coverage (chatbot vendor deployment, CTO interview) — likely understates any undisclosed internal AI work.",
+   "confidence": "medium",
+   "impact_on_incumbent_line": "Betsson exemplifies the incumbent archetype itself — defensive, distribution-strong, using AI for CRM/efficiency rather than player-ownership.",
+   "residual_gap": "No owned acquisition surface or agentic AI; relies on affiliate/brand marketing and a vendor chatbot only.",
+   "notes": "Legal entity Betsson AB (publ), Nasdaq Stockholm (BETS B); founded 1963 as AB Restaurang Rouletter, renamed Betsson 2001. Marked in the project seedlist as the sector's 'reference competitor set' anchor — used here as the incumbent-archetype baseline rather than a disruption-forward company."
+  },
+  {
+   "name": "Bet365 Group Ltd",
+   "sector": "Operator (B2C)",
+   "founded": 2000,
+   "hq": "Stoke-on-Trent, UK",
+   "ftes": null,
+   "verticals": [
+    "Sportsbook",
+    "Casino and slots",
+    "Live casino",
+    "Poker and bingo"
+   ],
+   "value_chain": [
+    "Discover",
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "customer_base_segment": "B2C — global sports bettors and casino players; legal in 80+ countries, directly licensed in 30+",
+   "business_model_notes": "Private, family-owned global sportsbook/casino operator trading as Hillside (New Media) Limited, self-funded from internal cash flow, monetizing GGR with no external investors or debt.",
+   "direct_channel": "n",
+   "merchant_of_record": "y",
+   "api_commerce_ready": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "customer_facing_ai_assistant": "n",
+   "is_ai_the_core_focus": "n",
+   "foundation_model_approach": "In-house ML for a new AI-driven betting platform ($50M investment, launching 2026); no evidence of frontier model training",
+   "agentic_maturity_layer": "L1",
+   "gen_ai_platform_partnerships": null,
+   "existing_partnerships": "TestMu AI (agentic QA/test engineering vendor)",
+   "proprietary_data_advantage": "Decades of proprietary in-house odds-setting and in-play pricing data at global scale; exact scope undisclosed (private company)",
+   "licensed_jurisdictions": "UK Gambling Commission, Malta Gaming Authority plus 30+ direct licences; legally available in 80+ countries; live in 16 US states",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": "Uses AI-driven systems to flag problem-gambling patterns and trigger deposit-limit/self-exclusion prompts",
+   "crypto_accepted": null,
+   "total_funding_mn": null,
+   "market_cap_valuation_mn": 12000,
+   "revenue_traction": "£4.036B group revenue for FY ended 30 March 2025 (+9% YoY); pre-tax profit fell 44% to £348.7M",
+   "survival_tier": "Strong",
+   "horizon": "1-3y",
+   "w": [
+    1,
+    2,
+    1,
+    1,
+    2
+   ],
+   "w_notes": [
+    "Focused on improving existing sportsbook, not attacking acquisition model",
+    "$50M investment in new AI-driven betting platform, launching early 2026",
+    "TestMu AI is engineering/QA tooling, not a distribution alliance",
+    "New AI platform not yet fully live as of mid-2026",
+    "Reputedly low affiliate spend/strong organic reach; no public MAU data"
+   ],
+   "d": [
+    5,
+    5,
+    5,
+    3,
+    5,
+    5
+   ],
+   "d_notes": [
+    "Industry-leading in-play betting breadth across sports, casino, poker, bingo",
+    "Hillside Technology's own platform ships hundreds of releases weekly",
+    "Licensed 30+ jurisdictions directly; legally live in 80+ countries",
+    "Handles payments across many markets; MoR structure not disclosed",
+    "£4.036B revenue, global 80+ country reach, 16 US states",
+    "Globally recognized, trusted brand; leader in odds-setting reputation"
+   ],
+   "ai": [
+    2,
+    1,
+    0,
+    0,
+    2,
+    4,
+    1
+   ],
+   "ai_notes": [
+    "ML-driven platform under $50M investment; no frontier model evidence",
+    "AI platform pre-launch/early rollout; no shown autonomy yet",
+    "No MCP/A2A/UCP/ACP adoption evidence found",
+    "No confirmed customer-facing conversational assistant product identified",
+    "New platform targets personalized odds/UX; still rolling out in 2026",
+    "Decades of proprietary in-house pricing/trading data at global scale",
+    "TestMu partnership is vendor consumption, not an AI platform position"
+   ],
+   "f": [
+    5,
+    3,
+    5,
+    5,
+    3
+   ],
+   "f_notes": [
+    "Self-funded from ~£3.1bn cash; no external financing needed",
+    "Revenue +9% to £4.036B but pre-tax profit fell 44%",
+    "Zero debt, £3.1bn liquidity; effectively unlimited runway",
+    "Debt-free since 2005; no external leverage per multiple sources",
+    "Private; no public markets, though PE sale/listing explored in 2025"
+   ],
+   "evidence_links": [
+    "https://wageringamerica.com/2026/06/07/bet365-equity-research-jun-2026/",
+    "https://sbcamericas.com/2025/05/01/coates-considers-sale-spinoff-bet365/",
+    "https://www.bestinslot.co/news/bet365-announces-groundbreaking-50-million-investment-in-ai-driven-betting-platform-19839",
+    "https://www.businesswire.com/news/home/20260331630451/en/bet365-Partners-with-TestMu-AI-to-Accelerate-Global-Release-Velocity-with-Agentic-AI-Quality-Engineering"
+   ],
+   "evidence_notes": "Good visibility on financials via UK Companies House-derived press coverage and equity-research notes; strategy and AI-depth claims rely on sparse press releases since the company does not hold investor calls or publish detailed disclosures.",
+   "confidence": "medium",
+   "impact_on_incumbent_line": "Bet365 is the most distribution-dominant incumbent in the set, but its low willingness to disrupt its own model keeps it a 'sleeping giant' relative to Flutter/DraftKings.",
+   "residual_gap": "No shipped conversational/agentic AI product; extreme corporate opacity limits verification of willingness and AI claims.",
+   "notes": "Legal entity Bet365 Group Ltd; UK operations trade as Hillside (New Media) Limited within the umbrella 'Hillside Group'. Wholly private, Coates family owned (Denise Coates ~58%, John Coates ~25%, Peter Coates chairman/remainder). No ticker, no public market cap — market_cap_valuation_mn is a third-party private valuation estimate (Eilers & Krejcik midpoint, ~2025), not a listed figure. Confidence capped at medium given reliance on UK filings/press rather than company disclosure."
+  },
+  {
+   "name": "Entain plc",
+   "sector": "Operator (B2C)",
+   "founded": 2004,
+   "hq": "London, UK (registered office Isle of Man)",
+   "ftes": null,
+   "verticals": [
+    "Sportsbook",
+    "Casino and slots",
+    "Live casino",
+    "Poker and bingo"
+   ],
+   "value_chain": [
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "customer_base_segment": "B2C — sports bettors and casino players across UK/Ireland and 30+ international regulated markets, plus US via the BetMGM joint venture",
+   "business_model_notes": "Multi-brand sportsbook/casino operator (Ladbrokes, Coral, bwin, partypoker, Sportingbet) monetizing GGR; BetMGM is a 50/50 US joint venture with MGM Resorts International.",
+   "direct_channel": "n",
+   "merchant_of_record": "y",
+   "api_commerce_ready": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "customer_facing_ai_assistant": "n",
+   "is_ai_the_core_focus": "n",
+   "foundation_model_approach": "External platform AI (Snowflake Cortex) for internal software-delivery tooling; no evidence of own model training",
+   "agentic_maturity_layer": "L0",
+   "gen_ai_platform_partnerships": null,
+   "existing_partnerships": "MGM Resorts International (BetMGM 50/50 JV), Snowflake, LTIMindtree",
+   "proprietary_data_advantage": "Behavioral/transaction data across 30+ regulated markets plus BetMGM US JV; no described unique data moat found",
+   "licensed_jurisdictions": "UK, Ireland, Italy, Belgium, Netherlands, Croatia, Poland, Georgia, Latvia, Australia (wholly owned) plus US via BetMGM JV; 30+ regulated markets total",
+   "regulated_revenue_pct": 100,
+   "responsible_gambling_stance": "States it operates exclusively in domestically regulated/regulating markets; standard safer-gambling tooling implied, not independently detailed this session",
+   "crypto_accepted": null,
+   "total_funding_mn": null,
+   "market_cap_valuation_mn": 6400,
+   "revenue_traction": "£5,325.4m NGR FY2025 (+3-4% YoY), underlying EBITDA £1,160.1m (+7-8%), net loss £680.5m including a £488m UK gambling-tax-related impairment",
+   "survival_tier": "Stable",
+   "horizon": "3y+",
+   "w": [
+    1,
+    3,
+    1,
+    1,
+    1
+   ],
+   "w_notes": [
+    "Reactive to prediction-market pressure on BetMGM, not proactively offensive",
+    "Ennovate hub commits up to £100M to innovation/startup investment",
+    "Partnerships (Snowflake, LTIMindtree) are infra vendors, not distribution deals",
+    "No flagship owned AI/wallet/prediction surface identified beyond standard apps",
+    "Acquisition remains brand/affiliate-driven across Ladbrokes, Coral, bwin, BetMGM"
+   ],
+   "d": [
+    4,
+    4,
+    5,
+    3,
+    4,
+    4
+   ],
+   "d_notes": [
+    "Sportsbook, casino, poker, bingo across Ladbrokes/Coral/bwin/partypoker/BetMGM brands",
+    "Long-invested unified platform infrastructure across international brand portfolio",
+    "30+ regulated markets; 100% of revenue from regulated/regulating markets",
+    "Payments via partner networks typical of sector; MoR status unconfirmed",
+    "£5.3B revenue, top-3 position in 87%+ of revenue markets",
+    "Ladbrokes/Coral are trusted UK high-street heritage betting brands"
+   ],
+   "ai": [
+    2,
+    1,
+    0,
+    0,
+    2,
+    2,
+    1
+   ],
+   "ai_notes": [
+    "Uses Snowflake Cortex GenAI for SDLC; API/platform consumer tier",
+    "No customer-facing autonomous agent found; internal tooling only",
+    "No agent-commerce protocol adoption evidence found",
+    "No confirmed customer-facing conversational assistant identified",
+    "Pune hub cited for AI-driven personalisation; segment-level, unconfirmed depth",
+    "Large multi-market dataset incl. BetMGM US; no described unique moat",
+    "Consumer of Snowflake/LTIMindtree AI tools, not an AI platform provider"
+   ],
+   "f": [
+    3,
+    2,
+    3,
+    2,
+    4
+   ],
+   "f_notes": [
+    "Underlying EBITDA £1.16B positive, but reported £680.5M net loss",
+    "Revenue/EBITDA grew modestly, but net loss on UK tax impairment",
+    "Ongoing EBITDA-positive operations, but high leverage adds fragility",
+    "Net debt £3,644m; leverage 3.1x, look-through 3.6x",
+    "LSE-listed large-cap; established access to public capital markets"
+   ],
+   "evidence_links": [
+    "https://www.entaingroup.com/news-insights/latest-news/2026/2025-full-year-results/",
+    "https://www.gamblinginsider.com/news/179065/betmgm-q2-2026-earnings-prediction-markets-customer-win-rates-weigh-on-results",
+    "https://sbcnews.co.uk/technology/2025/07/08/entain-india-tech-arm/",
+    "https://ggbmagazine.com/articles/entain-launches-innovation-hub/"
+   ],
+   "evidence_notes": "Official FY2025 results release gives solid financial grounding; AI-specific and willingness signals rely on secondary trade press (tech-hub, Snowflake blog) and inference from BetMGM's defensive posture against prediction markets.",
+   "confidence": "medium",
+   "impact_on_incumbent_line": "Entain is squarely the incumbent under pressure — BetMGM's repeated guidance cuts show prediction markets eroding its position rather than Entain leading disruption.",
+   "residual_gap": "No owned AI-native acquisition surface; leverage and a UK tax-driven impairment constrain capital for offensive bets.",
+   "notes": "Legal entity Entain plc (LSE: ENT), founded 2004 as Gaming VC Holdings (GVC Holdings), renamed Entain in December 2020. BetMGM LLC is a 50/50 joint venture with MGM Resorts International — scored at the Entain parent level; BetMGM performance included for context only, not counted as wholly-owned distribution or willingness."
+  },
+  {
+   "name": "DraftKings Inc.",
+   "sector": "Operator (B2C)",
+   "founded": 2012,
+   "hq": "Boston, Massachusetts, US",
+   "ftes": null,
+   "verticals": [
+    "Sportsbook",
+    "Casino and slots",
+    "Live casino",
+    "Lottery and emerging"
+   ],
+   "value_chain": [
+    "Discover",
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "customer_base_segment": "B2C — US sports bettors, casino/DFS players and lottery customers; essentially a single-country (US) consumer base",
+   "business_model_notes": "US-focused sportsbook/casino/lottery operator (plus legacy DFS) monetizing GGR; expanding into CFTC-licensed prediction markets through the Railbird acquisition and DraftKings Predictions, moving toward a unified 'Super App'.",
+   "direct_channel": "y",
+   "merchant_of_record": "y",
+   "api_commerce_ready": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "customer_facing_ai_assistant": "y",
+   "is_ai_the_core_focus": "n",
+   "foundation_model_approach": "External AI tools/APIs for coding, RFPs, ops and chat; no evidence of own model training",
+   "agentic_maturity_layer": "L1",
+   "gen_ai_platform_partnerships": null,
+   "existing_partnerships": "CME Group, Crypto.com (prediction-market contracts), Railbird (acquired Oct 2025), MaestroQA (AI coaching vendor)",
+   "proprietary_data_advantage": "Legacy DFS entry/contest data plus the widest US state-sportsbook footprint; no industry-defining moat described",
+   "licensed_jurisdictions": "27 US states plus Washington DC for online sportsbook (widest state coverage of any US operator); lottery via Jackpocket in additional states",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": "Standard US state-licence safer-gambling requirements; not independently detailed this session",
+   "crypto_accepted": "y",
+   "total_funding_mn": null,
+   "market_cap_valuation_mn": 12360,
+   "revenue_traction": "$6.05B FY2025 revenue (+27% YoY), adjusted EBITDA $620M (+242.5% YoY), first positive net income since its 2020 IPO",
+   "survival_tier": "Stable",
+   "horizon": "0-12m",
+   "w": [
+    4,
+    4,
+    3,
+    4,
+    4
+   ],
+   "w_notes": [
+    "Building 'Super App' unifying sportsbook, casino, lottery, predictions as core strategy",
+    "Acquired Railbird (CFTC-licensed exchange); investing to reduce third-party dependence",
+    "CME/Crypto.com contract deals, though moving toward owned-exchange independence",
+    "DraftKings Predictions live Dec 2025; crypto-to-cash deposits in 4 states",
+    "Widest US state footprint (27+DC); #2 US sportsbook operator by scale"
+   ],
+   "d": [
+    4,
+    4,
+    3,
+    3,
+    2,
+    4
+   ],
+   "d_notes": [
+    "Sportsbook, casino, lottery (Jackpocket), now prediction markets via Railbird",
+    "Owns Railbird exchange tech; platform historically built via SBTech acquisition",
+    "27 states + DC; strong domestic breadth, no international scale",
+    "Crypto-to-cash deposits in 4 states; fiat MoR status unclear",
+    "$6.05B revenue but essentially US-only; no material global footprint",
+    "#2 US betting brand by revenue/EBITDA behind FanDuel, well recognized"
+   ],
+   "ai": [
+    2,
+    1,
+    0,
+    2,
+    2,
+    3,
+    1
+   ],
+   "ai_notes": [
+    "AI used for coding, RFPs, ops efficiency via external tools, not own models",
+    "AI-powered coaching (MaestroQA) and chatbots are assistive, not autonomous",
+    "No MCP/A2A/UCP/ACP adoption evidence found",
+    "Chatbots implemented for customer service per trade-press coverage",
+    "AI cited for personalized content serving; depth/scope not detailed",
+    "Legacy DFS entry data plus widest-state sportsbook behavioral dataset",
+    "Consumer of AI vendors (MaestroQA, coding tools), not an AI platform provider"
+   ],
+   "f": [
+    4,
+    4,
+    4,
+    null,
+    4
+   ],
+   "f_notes": [
+    "Adj EBITDA $620M FY25, up 242.5%; funding position much improved",
+    "Revenue $6.05B +27%; first-ever positive net income since 2020 IPO",
+    "Newly cash-generative and profitable; runway concerns much reduced",
+    "Leverage/debt structure not confirmed via sources found this session",
+    "NASDAQ large-cap ($12.36B mkt cap); proven equity/convert capital access"
+   ],
+   "evidence_links": [
+    "https://next.io/news/prediction-markets/draftkings-seals-railbird-acquisition-prediction-markets-launch/",
+    "https://www.cnbc.com/2025/10/21/draftkings-railbird-predictions-platform-acquisition.html",
+    "https://www.covers.com/industry/draftkings-to-offer-users-crypto-to-cash-access-in-4-states-feb-2-2026",
+    "https://www.covers.com/industry/draftkings-finishes-2025-on-high-note-increases-q4-revenue-feb-12-2026"
+   ],
+   "evidence_notes": "Strong recent disclosure via earnings coverage and multiple corroborating trade-press sources on Railbird/prediction-markets strategy; AI-depth and leverage/debt-structure claims are thinner and partly inferred.",
+   "confidence": "high",
+   "impact_on_incumbent_line": "DraftKings is racing alongside Flutter/FanDuel to own the prediction-markets flank before it cannibalizes traditional sportsbook margin from outside the licensing regime.",
+   "residual_gap": "No international scale or licensing; the DraftKings Exchange and full Super App integration are still mid-rollout, not fully proven.",
+   "notes": "Legal entity DraftKings Inc (NASDAQ: DKNG). Acquired Jackpocket (lottery courier, 2024) and Railbird Technologies/Railbird Exchange (CFTC-licensed prediction platform, closed Oct 2025) — both now subsidiaries, not separate entities. Essentially a US-only operator, unlike the other four multinational operators in this batch — flag when comparing D5 global-scale and W5 audience-scale scores across the set."
+  },
+  {
+   "name": "Evolution AB (publ)",
+   "sector": "B2B supplier & platform",
+   "founded": 2006,
+   "hq": "Stockholm, Sweden",
+   "ftes": 16243,
+   "market_cap_valuation_mn": 13400,
+   "total_funding_mn": null,
+   "revenue_traction": "FY2025 revenue record >EUR2.4bn; Q1 2026 revenue ~EUR538M, +16% YoY",
+   "business_model_notes": "B2B live-casino and RNG-slot content licensor to 800+ operators worldwide; earns royalty/commission on operator handle, not player-facing.",
+   "customer_base_segment": "B2B — licensed gambling operators worldwide (not B2C)",
+   "existing_partnerships": "NetEnt, Red Tiger, Ezugi, Big Time Gaming, DigiWheel (subsidiaries); 800+ licensed operators as customers",
+   "direct_channel": "n",
+   "merchant_of_record": "n",
+   "api_commerce_ready": "n",
+   "customer_facing_ai_assistant": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "crypto_accepted": null,
+   "licensed_jurisdictions": "Supplier-licensed across most regulated tier-1 markets; UK licence under active UKGC review (2025)",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": "Standard supplier-level RG tooling; UKGC currently reviewing licence over unlicensed-market access allegations",
+   "proprietary_data_advantage": "Cross-operator live-dealer behavioral/session data at massive scale",
+   "foundation_model_approach": null,
+   "gen_ai_platform_partnerships": null,
+   "agentic_maturity_layer": "L0",
+   "horizon": "3y+",
+   "value_chain": [
+    "Bet Play",
+    "Retain"
+   ],
+   "verticals": [
+    "Casino and slots",
+    "Live casino"
+   ],
+   "survival_tier": "Strong",
+   "is_ai_the_core_focus": "n",
+   "impact_on_incumbent_line": "Indispensable content rail incumbents depend on; zero ambition to own the player relationship",
+   "residual_gap": "No player-facing wallet, brand, or acquisition channel — deliberately stays B2B-only",
+   "notes": "Legal entity Evolution AB (publ), Nasdaq Stockholm ticker EVO. Subsidiaries NetEnt, Red Tiger, Ezugi, Big Time Gaming, DigiWheel are consolidated under this parent — not separate rows. UKGC licence review (2025) over allegations its games appeared on unlicensed UK-facing sites is a live compliance flag, not yet resolved.",
+   "evidence_notes": "Evidence from Q1/Q2 2026 earnings coverage, market-cap trackers, and UKGC review reporting. Direct fetch of Evolution's own IR site failed (blocked); relied on secondary aggregator coverage of primary filings — flagged in confidence.",
+   "evidence_links": [
+    "https://www.ad-hoc-news.de/boerse/news/ueberblick/evolution-stock-trades-around-yearly-highs-as-strong-q1-2026-earnings/69819209",
+    "https://stockanalysis.com/quote/sto/EVO/market-cap/",
+    "https://next.io/news/regulation/ukgc-commences-review-evolution-licence/",
+    "https://en.wikipedia.org/wiki/Evolution_AB"
+   ],
+   "confidence": "high",
+   "w": [
+    0,
+    1,
+    1,
+    0,
+    0
+   ],
+   "d": [
+    5,
+    1,
+    4,
+    0,
+    5,
+    3
+   ],
+   "ai": [
+    1,
+    0,
+    0,
+    0,
+    1,
+    3,
+    1
+   ],
+   "f": [
+    5,
+    5,
+    5,
+    4,
+    5
+   ],
+   "w_notes": [
+    "Pure B2B supplier; content within current operator-channel model only",
+    "Capex into studios/content only, not player-acquisition or AI/wallet bets",
+    "800+ supply deals with operators, not demand-reshaping alliances",
+    "No owned app, wallet, AI assistant, or player-facing surface",
+    "No owned audience; reaches players only via operator brands"
+   ],
+   "d_notes": [
+    "Dominant must-have live-casino/RNG content across 800+ operators",
+    "Content API only; no owned PAM, wallet, or bonusing engine",
+    "Broad tier-1 supplier licensing; UK licence under active UKGC review",
+    "No payments or merchant-of-record function; pure content supplier",
+    "Global reach via 800+ operator brands; record 2025 revenue",
+    "Trusted live-dealer brand among players; not a wallet destination"
+   ],
+   "ai_notes": [
+    "No evidence of owning/training models; likely licensed AI tooling",
+    "No agentic capability shipped to players",
+    "No MCP/A2A/UCP/ACP adoption found",
+    "No customer-facing conversational assistant found",
+    "Localized/themed content per market; no individual-level personalisation shown",
+    "Cross-operator live-dealer behavioral data at scale",
+    "AI-tooling consumer (localisation); no platform-for-others position found"
+   ],
+   "f_notes": [
+    "Profitable, self-funded, no capital constraint evident",
+    "Record 2025 revenue >EUR2.4bn, ~66% EBITDA margin",
+    "Cash-generative; indefinite runway as profitable public company",
+    "Low leverage typical of business model, not independently verified",
+    "Nasdaq Stockholm listed, ~$13.4bn market cap, broad capital access"
+   ]
+  },
+  {
+   "name": "Better Collective A/S",
+   "sector": "Affiliate & media",
+   "founded": 2004,
+   "hq": "Copenhagen, Denmark",
+   "ftes": 1900,
+   "market_cap_valuation_mn": 800,
+   "total_funding_mn": null,
+   "revenue_traction": "FY2025 guidance EUR320-350M revenue; Q1 2026 revenue EUR86.3M, +5% YoY organic",
+   "business_model_notes": "Sports-media/affiliate group monetizing via CPA and revenue-share deals with sportsbooks plus a Paid Media (bought-traffic) segment; new Playbook AI betslip product adds an owned engagement layer.",
+   "customer_base_segment": "B2C sports-media audience, monetized B2B2C via sportsbook revenue-share deals",
+   "existing_partnerships": "X/Twitter (exclusive global AI-betting partner for Playbook); Playmaker Capital, RotoGrinders, Playmaker HQ (acquisitions among 30 total)",
+   "direct_channel": "y",
+   "merchant_of_record": "n",
+   "api_commerce_ready": "n",
+   "customer_facing_ai_assistant": "y",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "crypto_accepted": null,
+   "licensed_jurisdictions": null,
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": null,
+   "proprietary_data_advantage": "First-party betting-intent engagement data across a large media network",
+   "foundation_model_approach": "Playbook built on external AI models for bet-slip image recognition and generation",
+   "gen_ai_platform_partnerships": "X (Twitter) — Playbook named official/exclusive global betting product",
+   "agentic_maturity_layer": "L1",
+   "horizon": "0-12m",
+   "value_chain": [
+    "Discover",
+    "Compare",
+    "Retain"
+   ],
+   "verticals": [
+    "Sportsbook"
+   ],
+   "survival_tier": "Stable",
+   "is_ai_the_core_focus": "n",
+   "impact_on_incumbent_line": "Turns affiliate traffic into an AI-native, higher-margin acquisition rail incumbents still need",
+   "residual_gap": "No licence, wallet, or product (odds/games) of its own — still depends on operator partners",
+   "notes": "Legal entity Better Collective A/S, listed Nasdaq Copenhagen/Stockholm (BETCO). Playbook is delivered as a product on X's platform (partner-dependent distribution), not a fully independent owned surface — tempers the direct_channel read to 'y with caveat'.",
+   "evidence_notes": "Strong recent evidence: Q1 2026 report (May 2026), multiple trade-press pieces on the Playbook/X launch (Sept 2025) and its global expansion (May 2026). Two WebFetch attempts on primary trade-press pages returned 403; relied on WebSearch summaries of the same stories from multiple outlets for corroboration.",
+   "evidence_links": [
+    "https://next.io/news/results/q126-revenue-growth-better-collective-in-black/",
+    "https://www.gamblingnews.com/news/better-collective-posts-q1-growth-maintains-2026-outlook/",
+    "https://www.intergameonline.com/igaming/news/better-collective-launches-playbook-on-x",
+    "https://tracxn.com/d/acquisitions/acquisitions-by-better-collective/__4BVerZTj81yfPXpgzx86gLvlxeJhuzuHPS6QQQoGBIQ"
+   ],
+   "confidence": "high",
+   "w": [
+    4,
+    3,
+    4,
+    4,
+    4
+   ],
+   "d": [
+    1,
+    0,
+    1,
+    0,
+    4,
+    2
+   ],
+   "ai": [
+    2,
+    2,
+    0,
+    3,
+    2,
+    3,
+    3
+   ],
+   "f": [
+    4,
+    4,
+    4,
+    2,
+    4
+   ],
+   "w_notes": [
+    "Positions Playbook to bypass Google/affiliate-SEO acquisition directly",
+    "Steady M&A (30 deals) plus fresh strategic bet on AI product Playbook",
+    "Exclusive global 'official betting partner' deal with X",
+    "Playbook AI betslip tool live, expanding into new markets",
+    "Owns large sports-media/tipster network drawing direct betting-intent traffic"
+   ],
+   "d_notes": [
+    "No own odds/markets; aggregates and links to third-party sportsbooks",
+    "No PAM, wallet, or trading/risk infrastructure of its own",
+    "Media/affiliate registrations only; not a licensed gambling operator",
+    "No payments or merchant-of-record capability",
+    "Media network across 20+ regulated markets, ~EUR320-350M revenue",
+    "Respected sports-media/tipster brand; not a deposit-taking betting brand"
+   ],
+   "ai_notes": [
+    "Playbook built on external AI models, no own foundation model",
+    "Assistive betslip generation with deep-links, not autonomous placement",
+    "No MCP/A2A/UCP/ACP adoption found",
+    "Playbook is primary AI interface for bet content on X",
+    "Segment-level content targeting; no individual AI personalisation evidenced",
+    "Large first-party betting-intent engagement dataset across media network",
+    "Exclusive AI-betting-partner status on X is a real platform position"
+   ],
+   "f_notes": [
+    "Profitable public company, self-funded, some debt from M&A history",
+    "EBITDA guide EUR100-120M on EUR320-350M revenue; net profit in Q1",
+    "Ongoing profitable operations support runway",
+    "Aggressive debt-funded M&A history (30 deals); leverage not independently verified",
+    "Nasdaq-listed, ~$0.8bn market cap, moderate capital access"
+   ]
+  },
+  {
+   "name": "Polymarket",
+   "sector": "AI-native & prediction markets",
+   "founded": 2020,
+   "hq": "New York, USA",
+   "ftes": 423,
+   "market_cap_valuation_mn": 15000,
+   "total_funding_mn": 1805,
+   "revenue_traction": "Annualized revenue crossed $1B in June 2026, six weeks after CFTC-regulated US launch",
+   "business_model_notes": "Crypto-native (USDC/pUSD) event-contract exchange; earns trading/spread revenue on volume, now operating a CFTC-regulated US arm (Polymarket US via QCX LLC) alongside its international crypto platform.",
+   "customer_base_segment": "B2C global retail traders plus growing institutional flow; US arm now a regulated exchange",
+   "existing_partnerships": "ICE/Intercontinental Exchange (investor, $2bn+ committed); Nasdaq Private Market (resolution-data partner for private-company markets); MLS (sports data/promo partnership)",
+   "direct_channel": "y",
+   "merchant_of_record": "n",
+   "api_commerce_ready": "y",
+   "customer_facing_ai_assistant": "n",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "crypto_accepted": "y",
+   "licensed_jurisdictions": "CFTC-regulated exchange/clearinghouse in the US (via QCX LLC / Polymarket US, since Sept 2025); grey/unlicensed as a gambling product in most other jurisdictions",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": null,
+   "proprietary_data_advantage": "Real-time crowd-priced probabilities widely cited by media/forecasters as a benchmark",
+   "foundation_model_approach": null,
+   "gen_ai_platform_partnerships": null,
+   "agentic_maturity_layer": "L0",
+   "horizon": "0-12m",
+   "value_chain": [
+    "Discover",
+    "Compare",
+    "Register KYC",
+    "Deposit",
+    "Bet Play",
+    "Retain",
+    "Withdraw"
+   ],
+   "verticals": [
+    "Lottery and emerging",
+    "Sportsbook"
+   ],
+   "survival_tier": "Strong",
+   "is_ai_the_core_focus": "n",
+   "impact_on_incumbent_line": "Offers a federally-regulated, exchange-based alternative that could pull sports bettors outside the licensed operator/affiliate model entirely",
+   "residual_gap": "Sports event-contract product still nascent/pending further CFTC approval (parlay-style contracts, FCM licence); not yet a casino or poker substitute",
+   "notes": "US-regulated operations run through a distinct related entity structure — Polymarket US / QCX LLC (clearing, acquired mid-2025) plus Coming Home GBA LLC (FCM licence applicant) — flagged as related entities, not duplicates, of the core Polymarket brand. Sector tag 'AI-native & prediction markets' reflects the disruption-frame taxonomy, but direct evidence of Polymarket itself building or deploying AI is thin (it is fundamentally exchange/clearing infrastructure, not an AI company) — the AI scores here come out lower than the seedlist's provisional 'mid-high AI' expectation; worth flagging when anchors.md is finalized. By contrast W and D evidence is very strong and recent.",
+   "evidence_notes": "Very strong, very recent (2026) evidence: CFTC-regulated US launch, ICE investment tranches (Oct 2025 + Mar 2026), Q1 2026 volume and June 2026 revenue milestone, May 2026 CFTC sports-contract filing, May 2026 Nasdaq Private Market partnership.",
+   "evidence_links": [
+    "https://ir.theice.com/press/news-details/2026/Intercontinental-Exchange-Announces-New-600-Million-Investment-in-Polymarket/default.aspx",
+    "https://www.cnbc.com/2026/06/26/polymarket-annualized-revenue-1-billion-us-exchange-.html",
+    "https://www.covers.com/industry/polymarket-files-parlay-style-sports-contracts-with-cftc-may-21-2026",
+    "https://www.cnbc.com/2026/05/19/polymarket-launches-private-company-trading-so-investors-can-speculate-on-anthropic-openai.html",
+    "https://docs.polymarket.com/polymarket-learn/FAQ/is-my-money-safe",
+    "https://startpolymarket.com/guides/how-to-deposit/"
+   ],
+   "confidence": "high",
+   "w": [
+    4,
+    5,
+    4,
+    5,
+    5
+   ],
+   "d": [
+    3,
+    4,
+    3,
+    3,
+    4,
+    3
+   ],
+   "ai": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    4,
+    3
+   ],
+   "f": [
+    5,
+    3,
+    5,
+    null,
+    5
+   ],
+   "w_notes": [
+    "Positions as CFTC-regulated alternative to licensed sportsbooks/affiliates",
+    "Raised $2bn+ from ICE, acquired QCEX exchange/clearing infra directly",
+    "ICE strategic investment plus MLS deal reposition sports-funnel access",
+    "Full-featured trading app live; US-regulated app launched May 2026",
+    "Owns intent directly; $26bn Q1 2026 volume on its own platform"
+   ],
+   "d_notes": [
+    "Broad self-created markets, but sports/casino verticals still nascent",
+    "Proven owned exchange/clearing (QCEX) handling billions in volume",
+    "CFTC-regulated in the US; grey/unlicensed as gambling elsewhere",
+    "US app supports ACH/card/Apple Pay; international remains crypto-only",
+    "Global reach, tens of billions in quarterly volume, active users undisclosed",
+    "High-profile brand; regulatory scrutiny/investigation reports persist"
+   ],
+   "ai_notes": [
+    "No evidence Polymarket trains or fine-tunes its own AI models",
+    "Third-party bots trade via public API; no official Polymarket agent shipped",
+    "Public API enables unofficial community MCP wrappers, not formal adoption",
+    "No official customer-facing AI assistant found",
+    "No evidence of AI-driven personalisation of markets or offers",
+    "Crowd-priced probabilities widely cited as a forecasting benchmark",
+    "Forecasting tools/AI agents consume Polymarket data as ground truth"
+   ],
+   "f_notes": [
+    "$2bn+ raised from ICE alone; extremely well capitalised",
+    "$1bn annualized revenue (Jun 2026); net profitability undisclosed",
+    "$1.8bn+ raised plus fast-ramping revenue implies long runway",
+    "Private company; leverage/debt data not disclosed",
+    "ICE-backed, pursuing $15bn valuation round, excellent capital access"
+   ]
+  },
+  {
+   "name": "Rithmm, Inc.",
+   "sector": "AI-native & prediction markets",
+   "founded": 2022,
+   "hq": "Chestnut Hill, MA, USA",
+   "ftes": null,
+   "market_cap_valuation_mn": null,
+   "total_funding_mn": 4.5,
+   "revenue_traction": null,
+   "business_model_notes": "Consumer subscription app (~$30/month) offering AI-built predictive models for player props, game picks, parlays and DFS lineups; analytics-only, does not take wagers itself.",
+   "customer_base_segment": "B2C — individual US sports bettors and DFS players",
+   "existing_partnerships": null,
+   "direct_channel": "y",
+   "merchant_of_record": "n",
+   "api_commerce_ready": "n",
+   "customer_facing_ai_assistant": "y",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "crypto_accepted": "n",
+   "licensed_jurisdictions": null,
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": null,
+   "proprietary_data_advantage": "None evident beyond licensed/public sports data feeds",
+   "foundation_model_approach": "Appears to build on external AI/LLM APIs for its 'AI builds a model for you' feature; specific vendor unconfirmed",
+   "gen_ai_platform_partnerships": null,
+   "agentic_maturity_layer": "L1",
+   "horizon": "3y+",
+   "value_chain": [
+    "Discover",
+    "Compare"
+   ],
+   "verticals": [
+    "Sportsbook"
+   ],
+   "survival_tier": "Unknown",
+   "is_ai_the_core_focus": "y",
+   "impact_on_incumbent_line": "Marginal on its own; a small analytics layer that still funnels bettors to incumbent sportsbooks",
+   "residual_gap": "No owned odds/content, no gambling licence, minimal distribution scale versus well-funded rivals (PrizePicks, Underdog)",
+   "notes": "Founded 2022 by CEO Megan Lanham and CTO Brian Beachkofski. This is the seedlist's designated low-end 'dormant' calibration anchor, and the evidence supports that: no press coverage found in the last 18 months, only one confirmed funding round ($2M seed, May 2023; $4.5M across 2 rounds total per Tracxn, unverified beyond that), no official IR/press presence. No subsidiary/duplicate concerns — small standalone entity.",
+   "evidence_notes": "Weak evidence tier throughout: app-store listings, review/aggregator sites, and a funding aggregator (Tracxn) — no primary-source press, filings, or company disclosures found in the last 18 months. Treat all scores here as best-effort inference, not confirmed fact.",
+   "evidence_links": [
+    "https://tracxn.com/d/companies/rithmm/__fV5H_jH0k275_d-xd9hlK3tWIa2HcIgBEATcAvi9w3k",
+    "https://apps.apple.com/us/app/rithmm-ai-sports-betting/id1641010681",
+    "https://www.rithmm.com/post/ai-tools-for-sports-betting",
+    "https://picksandparlays.net/reviews/ai-picks/rithmm"
+   ],
+   "confidence": "low",
+   "w": [
+    1,
+    2,
+    1,
+    3,
+    2
+   ],
+   "d": [
+    1,
+    0,
+    0,
+    0,
+    1,
+    2
+   ],
+   "ai": [
+    2,
+    1,
+    0,
+    3,
+    4,
+    1,
+    0
+   ],
+   "f": [
+    2,
+    null,
+    null,
+    null,
+    1
+   ],
+   "w_notes": [
+    "No channel-bypass stance found; complements existing sportsbooks",
+    "One AI-focused seed raise ($4.5M); no further funding/M&A found",
+    "Integrates odds comparisons across books; no major alliances found",
+    "AI model-builder app shipped and live on iOS/Android",
+    "Modest but real subscriber base (4.4/5 rating, 1,400+ reviews)"
+   ],
+   "d_notes": [
+    "No own odds/content; aggregates third-party sportsbook lines",
+    "No PAM, wallet, or trading-rail infrastructure of its own",
+    "Analytics-only; not a licensed gambling entity",
+    "Subscription billing only via app stores, no gambling MoR",
+    "Niche US-focused subscriber base, small single-market scale",
+    "Positive niche reputation, limited broad market awareness"
+   ],
+   "ai_notes": [
+    "Model-generation feature likely built on external AI/LLM APIs",
+    "Assistive AI model-builder only, no autonomous bet placement",
+    "No MCP/A2A/UCP/ACP adoption found",
+    "In-app 'ask AI to build a model' functions as a shipped assistant",
+    "User-customizable weighted AI models are the core product",
+    "Likely licensed/public sports data feeds, no unique data moat",
+    "Consumer of external AI/data services; no ecosystem-platform position"
+   ],
+   "f_notes": [
+    "$4.5M total raised across 2 rounds, modest for scaling ambitions",
+    "Private; no revenue/profitability disclosed",
+    "Last disclosed raise 2023; current runway unknown",
+    "Private; no debt/leverage data available",
+    "Thin funding history; no recent capital raise found"
+   ]
+  },
+  {
+   "name": "Sportradar Group AG",
+   "sector": "Data & odds",
+   "founded": 2001,
+   "hq": "St. Gallen, Switzerland",
+   "ftes": 4582,
+   "market_cap_valuation_mn": 4520,
+   "total_funding_mn": null,
+   "revenue_traction": "2026 guidance EUR1,557-1,582M revenue, 23-25% constant-currency growth; Q1 2026 revenue EUR347M (+11% YoY)",
+   "business_model_notes": "B2B sports-data, odds/trading, integrity and ad-tech provider to betting operators, leagues and media; now extending into prediction-market exchanges. Monetizes via data/technology licensing and managed trading services fees.",
+   "customer_base_segment": "B2B — betting operators, sports leagues, media, and (new) prediction-market exchanges",
+   "existing_partnerships": "Kalshi (multi-year global data/infrastructure partnership, June 2026); IMG Arena/Endeavor rights portfolio acquired Nov 2025 (Wimbledon, PGA Tour, EuroLeague, WTA, MLS); MLB, NHL, UFC rights deals",
+   "direct_channel": "n",
+   "merchant_of_record": "n",
+   "api_commerce_ready": "n",
+   "customer_facing_ai_assistant": "y",
+   "mcp": "n",
+   "a2a": "n",
+   "ucp": "n",
+   "acp": "n",
+   "crypto_accepted": null,
+   "licensed_jurisdictions": "56+ North American supplier licences (states/tribes/Canada); UK Gambling Commission licensed; UAE GCGRA vendor licence",
+   "regulated_revenue_pct": null,
+   "responsible_gambling_stance": "Bettor Sense AI responsible-gambling product live/in-trial with 13+ operators, ~6M player accounts profiled in 2025",
+   "proprietary_data_advantage": "Official league data rights plus computer-vision tracking across major sports",
+   "foundation_model_approach": "Trains its own proprietary generative basketball foundation model (body-pose data, billions of datapoints); soccer/tennis planned to follow",
+   "gen_ai_platform_partnerships": null,
+   "agentic_maturity_layer": "L1",
+   "horizon": "1-3y",
+   "value_chain": [
+    "Compare",
+    "Bet Play",
+    "Retain"
+   ],
+   "verticals": [
+    "Sportsbook"
+   ],
+   "survival_tier": "Stable",
+   "is_ai_the_core_focus": "n",
+   "impact_on_incumbent_line": "Extends its rail-beneath-the-rails power into prediction markets too, deepening incumbent dependency on it",
+   "residual_gap": "No owned consumer distribution or wallet; value capture stays entirely B2B",
+   "notes": "Legal entity Sportradar Group AG (Swiss-domiciled), NASDAQ: SRAD. IMG ARENA acquisition closed Nov 2025, structured at no net cash cost to Sportradar. Distinct company from competitor Genius Sports — not a duplicate or subsidiary relationship.",
+   "evidence_notes": "Strong, recent (2025-2026) evidence: SEC 6-K filings, investor-day AI demonstrations, the Kalshi partnership press release (June 2026), and a Jefferies analyst note (June 2025) rating it the most AI-advanced company in gaming.",
+   "evidence_links": [
+    "https://sportradar.com/content-hub/news/sportradar-and-kalshi-announce-first-of-its-kind-data-and-infrastructure-global-partnership-for-prediction-markets/?lang=en-us",
+    "https://investors.sportradar.com/news-releases/news-release-details/sportradar-announces-close-acquisition-img-arena-and-its",
+    "https://www.casino.org/news/sportradar-most-ai-advanced-gaming-company-says-analyst/",
+    "https://sportradar.com/integrity-regulatory/regulatory-services/bettor-sense/?lang=en-us",
+    "https://companiesmarketcap.com/sportradar/marketcap/"
+   ],
+   "confidence": "high",
+   "w": [
+    2,
+    4,
+    4,
+    2,
+    1
+   ],
+   "d": [
+    5,
+    4,
+    5,
+    0,
+    5,
+    1
+   ],
+   "ai": [
+    4,
+    2,
+    0,
+    2,
+    3,
+    5,
+    4
+   ],
+   "f": [
+    4,
+    3,
+    4,
+    3,
+    4
+   ],
+   "w_notes": [
+    "Extends B2B data supply to new customer types, not direct-to-player",
+    "IMG Arena acquisition plus Kalshi deal plus AI investor day",
+    "Landmark Kalshi partnership plus major league rights reposition funnel",
+    "Bettor Sense/Bet Concierge shipped but delivered via operators only",
+    "No owned consumer audience; reaches players via operators/media only"
+   ],
+   "d_notes": [
+    "Official data/odds rights across major leagues, must-have supply position",
+    "Managed Trading Services provide real pricing/risk infrastructure",
+    "56+ NA licences, UK/UAE licensed, dedicated integrity/regulatory division",
+    "No payments or merchant-of-record function",
+    "Global supplier, EUR1.56-1.58bn 2026 revenue guide, ~5,000 staff",
+    "Industry-recognized supplier brand, largely invisible to end bettors"
+   ],
+   "ai_notes": [
+    "Trained proprietary generative basketball foundation model on billions of datapoints",
+    "Bet Concierge chatbot prototyping bet-building, not yet broad production",
+    "No MCP/A2A/UCP/ACP adoption found",
+    "Bet Concierge/Bettor Sense chatbots exist, delivered via operator apps",
+    "GenAI audio plus personalized odds/content described at segment level",
+    "Official rights plus computer-vision tracking, industry-defining data moat",
+    "Analyst-rated most AI-advanced in sector; leagues/exchanges build on its data"
+   ],
+   "f_notes": [
+    "Well-capitalised public company, ~$4.5bn market cap",
+    "Strong revenue growth (23-25%) but reported net loss in Q1 2026",
+    "Growing revenue, public company, no near-term runway concern",
+    "IMG Arena deal structured with no cash outlay; leverage unverified",
+    "Nasdaq-listed, demonstrated M&A capacity via deal structuring"
+   ]
+  }
+ ]
+}
