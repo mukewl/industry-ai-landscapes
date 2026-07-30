@@ -81,6 +81,49 @@ AI_SIGNALS = [
 ]
 
 INDUSTRIES = {
+    "igaming": {
+        "title": "iGaming — who owns the player when AI reshapes acquisition and the bet itself",
+        "incumbent": "The licensed multi-brand operator and its affiliate-SEO acquisition rail: Betsson, Entain, Flutter, 888/evoke buying players through Better Collective / Catena / Google, then owning wallet and account",
+        "verticals": ["Sportsbook", "Casino and slots", "Live casino", "Poker and bingo", "Lottery and emerging"],
+        "stages": ["Discover", "Compare", "Register KYC", "Deposit", "Bet Play", "Retain", "Withdraw"],
+        "sectors": ["Operator (B2C)", "B2B supplier & platform", "Data & odds", "Affiliate & media",
+                    "Payments & fintech", "AI-native & prediction markets", "RegTech & compliance",
+                    "Big Tech platform"],
+        "pillars": {"Player (demand)": "owns the intent moment — traffic it controls, not rents",
+                    "Product (content)": "owns odds/markets/games players want",
+                    "Wallet (settlement)": "licensed money in and out — deposits, MoR, payouts"},
+        "extra_profile": [
+            "Licensed jurisdictions", "Regulated revenue pct", "Locally regulated markets count",
+            "Responsible gambling stance", "Crypto accepted",
+        ],
+        "w": [
+            ("Strategic intent stance", "Public strategy toward owning the player relationship directly / outside today's acquisition channels",
+             "0 content with current channels · 3 building own acquisition or direct brand · 5 openly attacking the operator-affiliate model"),
+            ("Investment and M&A direction", "Capital deployed toward player-acquisition, AI, prediction-market or wallet assets",
+             "0 none · 3 one relevant bet · 5 systematic portfolio reshaping how players are won"),
+            ("iGaming partnerships and alliances", "Alliances (media, sports, platforms, AI) that reposition who reaches the player first",
+             "0 none · 3 a few commercial deals · 5 load-bearing alliances across the funnel"),
+            ("Adjacent offerings shipped", "Own app/wallet/AI assistant/prediction or free-to-play surface already live",
+             "0 none · 3 one shipped experiment · 5 full owned player surface live"),
+            ("Owned audience with betting intent", "Direct reach to people about to place a bet — traffic it controls, not rents",
+             "0 no audience · 3 large adjacent or rented audience · 5 owns the intent moment at scale"),
+        ],
+        "d": [
+            ("Product and content access", "Odds, markets, games and live content it owns or can offer",
+             "0 none · 3 solid single-vertical offer or aggregation · 5 must-have content across verticals"),
+            ("Platform and trading rail", "PAM, wallet, trading/risk management, pricing, bonusing engine",
+             "0 none · 3 partial or licensed-in stack · 5 proven owned platform at scale"),
+            ("Licensing and compliance", "Jurisdictions held, KYC/AML, responsible-gambling and ad-rule competence",
+             "0 unlicensed/grey · 3 licensed in a few markets · 5 broad tier-1 licence portfolio and compliance machine"),
+            ("Payments and merchant of record", "Deposits/withdrawals, MoR status, fraud, payouts across markets",
+             "0 none · 3 payments via partner · 5 owns high-risk payments and MoR at scale"),
+            ("Global scale and reach", "Geographic footprint and active-player base today",
+             "0 single small market · 3 multi-market · 5 global with millions of actives"),
+            ("Brand trust with players", "Would a player deposit money with it tomorrow?",
+             "0 unknown/distrusted · 3 respected in a niche · 5 top-of-mind trusted betting brand"),
+        ],
+        "protocol_note": "Direct channel = an owned route to the player (own app/AI assistant/community/prediction surface) that bypasses paid affiliate and search acquisition — the industry's NDC-equivalent.",
+    },
     "gaming": {
         "title": "Gaming — AI/agentic disruption of game discovery & distribution",
         "incumbent": "The storefront take-rate model: Steam (Valve), console stores (PlayStation/Xbox/Nintendo), mobile app stores (Apple/Google)",
@@ -216,7 +259,8 @@ def columns_for(ind):
         phases.append((phase, len(cols) + 1, len(cols) + len(headers)))
         cols.extend(headers)
 
-    profile = PROFILE + [f"VC{i+1} {s}" for i, s in enumerate(c["stages"])]
+    # extra_profile = optional industry-specific PROFILE fields (e.g. iGaming licensing)
+    profile = PROFILE + c.get("extra_profile", []) + [f"VC{i+1} {s}" for i, s in enumerate(c["stages"])]
     block("PHASE 1 · PROFILE", profile)
     position = []
     for v in c["verticals"]:
@@ -280,8 +324,49 @@ def build(ind):
         sg.column_dimensions[col].width = width
 
     out = ROOT / "industries" / ind / f"{ind}_landscape.xlsx"
+    out.parent.mkdir(parents=True, exist_ok=True)
     wb.save(out)
     print(f"{out.relative_to(ROOT)}: {len(cols)} columns, sheets {wb.sheetnames}")
+    return out
+
+
+def write_brief(ind):
+    """Emit industries/<ind>/researcher_brief.md — the single source of truth the
+    Sonnet research agents Read before scoring. Generated from INDUSTRIES so the
+    brief, the workbook's Scoring Guide and populate.py can never drift apart."""
+    c = INDUSTRIES[ind]
+    L = [f"# Researcher brief — {ind}", "",
+         "**Generated by `scripts/make_workbook.py` — do not hand-edit.** Regenerate after any change to the signal definitions.", "",
+         f"## The frame", f"{c['title']}", "",
+         f"**Incumbent under threat:** {c['incumbent']}", "",
+         f"**Direct channel definition:** {c['protocol_note']}", ""]
+    if c.get("pillars"):
+        L += ["## The three pillars", "A company holding all three can run the transaction end-to-end without the incumbent.", ""]
+        L += [f"- **{k}** — {v}" for k, v in c["pillars"].items()] + [""]
+    if c.get("sectors"):
+        L += ["## Sector taxonomy (`sector` MUST be exactly one of these)", ""]
+        L += [f"- {s}" for s in c["sectors"]] + [""]
+    L += ["## Verticals (score coverage per vertical)", ", ".join(c["verticals"]), "",
+          "## Value chain (VC1–VC7)", " → ".join(c["stages"]), "",
+          "## Signals — score 0–5 against these anchors", ""]
+    for prefix, group, label in (("W", c["w"], "Willingness"), ("D", c["d"], "Distribution readiness"),
+                                 ("AI", AI_SIGNALS, "AI readiness")):
+        L += [f"### {label}", "", "| Signal | Definition | Anchors (0 · 3 · 5) |", "|---|---|---|"]
+        for i, (name, definition, anchors) in enumerate(group, 1):
+            L.append(f"| **{prefix}{i} {name}** | {definition} | {anchors} |")
+        L.append("")
+    L += ["## Non-negotiables", "",
+          "- Whole integers 0–5 only; `null` for genuine unknowns (never guess a number).",
+          "- Every score needs a ≤12-word justification grounded in what you found.",
+          "- ≥2 source URLs per company; prefer evidence from the last 18 months.",
+          "- Score the **frame**, not company size: a giant uninterested in this disruption scores LOW on willingness.",
+          "- Resolve to the legal entity, not the brand; flag subsidiaries and suspected duplicates in `notes`.",
+          f"- Also read `industries/{ind}/frame.md` (why-now context) and `industries/{ind}/anchors.md` (scored calibration companies) if present.",
+          ""]
+    out = ROOT / "industries" / ind / "researcher_brief.md"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(L), encoding="utf-8")
+    print(f"{out.relative_to(ROOT)}: brief written")
     return out
 
 
@@ -291,3 +376,4 @@ if __name__ == "__main__":
         if ind not in INDUSTRIES:
             sys.exit(f"unknown industry {ind!r} — choose from {list(INDUSTRIES)}")
         build(ind)
+        write_brief(ind)

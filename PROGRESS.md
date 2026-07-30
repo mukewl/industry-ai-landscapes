@@ -2,43 +2,49 @@
 
 > The resume point. Update after every batch/milestone, not just session end.
 
-**Last updated:** 2026-07-13 (session 01 — scaffold)
-**Current phase:** A complete → next is **Phase B (Gaming)**, starting with frame.md review with the user.
+**Last updated:** 2026-07-13 (session 02 — iGaming + orchestration system)
+**Current phase:** B (iGaming population).
 
 ## Status board
 
-| | Gaming | FMCG | Luxury |
-|---|---|---|---|
-| Frame (`frame.md`) | ⚠ draft — needs user review | ⚠ draft — needs user review | ⚠ draft — needs user review |
-| Skeleton workbook (111 cols) | ✅ generated | ✅ generated | ✅ generated |
-| Seed list (~150 companies) | — | — | — |
-| **Populated companies** | **0 / ~130** | **0 / ~130** | **0 / ~130** |
-| Calibration anchors set | — | — | — |
-| Relationships pass | — | — | — |
-| Dashboard adapted + built | — | — | — |
-| Deployed (`/gaming` etc.) | — | — | — |
-| Findings register | — | — | — |
+| | **iGaming** | Gaming | FMCG | Luxury |
+|---|---|---|---|---|
+| Frame (`frame.md`) | ⚠ draft (in use) | ⚠ draft | ⚠ draft | ⚠ draft |
+| Skeleton workbook | ✅ 116 cols | ✅ 111 cols | ✅ 111 cols | ✅ 111 cols |
+| Researcher brief | ✅ generated | — | — | — |
+| Seed list (~150) | ✅ | — | — | — |
+| **Populated companies** | **see ledger / ~130** | **0 / ~130** | **0 / ~130** | **0 / ~130** |
+| Calibration anchors | batch 1 → `anchors.md` | — | — | — |
+| Relationships pass | — | — | — | — |
+| Dashboard adapted + built | — | — | — | — |
+| Deployed | — | — | — | — |
+| Findings register | — | — | — | — |
+
+Population detail per industry: `industries/<ind>/batches/ledger.md`.
 
 ## Shared infrastructure
 
 | Item | Status |
 |---|---|
-| Repo scaffold (CLAUDE/PLAN/PROGRESS/DECISIONS, template/, generator) | ✅ session 01 |
+| Repo scaffold + `template/` | ✅ session 01 |
 | GitHub repo `industry-ai-landscapes` (public) | ✅ pushed |
-| `scripts/populate.py` (batch writer + score computer) | — (Phase B) |
-| Landing page + header toggle | — (Phase B, with the first dashboard) |
-| Vercel project + env vars (`GEMINI_API_KEY`, `SCENARIO_PASSCODE`) | — (Phase B end) |
-| Industry-aware `api/scenario.js` | — (Phase B end) |
+| **Orchestration system** (`ORCHESTRATION.md`, `research_batch.js`, `populate.py`, `qa_check.py`, agent def) | ✅ session 02 — write path verified end-to-end |
+| Landing page + 4-way header toggle | — (Phase B5, with the first dashboard) |
+| Vercel project + env vars | — (Phase B5) |
+| Industry-aware `api/scenario.js` | — (Phase B5) |
 
-## Next actions (in order)
+## How to run the next batch (full detail in ORCHESTRATION.md)
 
-1. **Review `industries/gaming/frame.md` with the user** — pillars, taxonomy+colors, verticals, incumbent benchmark `{w:30,d:95,ai:40}`, scoring anchors (in the workbook's Scoring Guide). Flip status to `approved`.
-2. Build the gaming **seed list** (~150 candidates across the 7 sectors; agent sweep → dedupe → rank) → `industries/gaming/seedlist.md`.
-3. Write `scripts/populate.py`; research + write **batch 1 (~20 companies incl. the 5 calibration anchors)**.
-4. Continue batches to ~130 → relationships pass → dashboard adaptation (template/ADAPTATION-CHECKLIST.md) → deploy.
+1. Pick the next ~25 from `industries/igaming/seedlist.md` (skip anything already in the workbook — check it first, never assume).
+2. `Workflow({scriptPath: "scripts/research_batch.js", args: {industry, root (ABSOLUTE), perAgent: 5, companies: [...]}})` — args must be a real JSON object.
+3. QA-gate the returned rows (7 checks in ORCHESTRATION.md), save to `industries/igaming/batches/igaming-batch-NN.json`.
+4. `python -X utf8 scripts/populate.py igaming <batch.json>` then `python -X utf8 scripts/qa_check.py igaming`.
+5. Update this file + session log, commit.
 
 ## Watch-outs
 
-- Frames are **drafts** — do not populate until the user approves the active industry's frame.
-- Regenerating a workbook (`make_workbook.py`) is only safe while it's EMPTY.
+- **Long fleet runs can die on the session/usage limit and return nothing** (happened in session 02: 5 agents, 237k tokens, 0 rows — agents never got to return their structured output). Keep batches ~10–25, and **always check the workbook + ledger before re-running** so you neither duplicate nor lose work. Nothing is persisted until `populate.py` runs.
+- Frames are still **drafts** — worth a user review pass before the dataset gets large.
+- `qa_check.py` exits non-zero on FAIL; treat that as a hard gate, not advice.
+- Regenerating a workbook via `make_workbook.py` **wipes populated rows** — only safe while empty (regenerating the *brief* alone is always safe).
 - No Amadeus client material in this repo, ever.

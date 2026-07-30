@@ -22,6 +22,8 @@ Three AI-disruption landscape dashboards — **gaming · FMCG · luxury** — bu
 
 ## Population rules (the multi-session core)
 
+> **The mechanics live in `ORCHESTRATION.md`** — Opus plans/instructs/QA-gates, Sonnet agents research via `scripts/research_batch.js`, `populate.py` writes, `qa_check.py` gates. Read it before running a batch. Nothing is persisted until `populate.py` runs, so **always check the workbook + `batches/ledger.md` before re-running a batch** (a fleet can die on the usage limit and return nothing).
+
 - Research agents fill workbooks **one industry at a time**, in batches of ~15–25 companies, scoring every signal 0–5 **against the workbook's Scoring Guide anchors** — never gut feel.
 - **Every row carries evidence**: `Evidence links` (source URLs), `Evidence notes`, `Confidence` (H/M/L), `Researched on/by`. A row without evidence is a rumor, not data.
 - **Calibration**: the first batch of each industry establishes ~5 anchor companies spanning the score range; every ~50 companies, re-check a sample against the anchors so 0–5 stays consistent across sessions.

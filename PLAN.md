@@ -34,20 +34,24 @@ Per-industry meaning lives in each workbook's **Scoring Guide** sheet (signal de
 - [x] CLAUDE.md · PROGRESS.md · PLAN.md · DECISIONS.md · sessions/
 - [x] GitHub repo `industry-ai-landscapes` (public) + push
 
-### Phase B — Gaming (~3–5 sessions)
-- [ ] **B1**: review/approve `gaming/frame.md` + Scoring Guide with user → seed list (~150) → `scripts/populate.py` → batch 1 (~20 incl. anchors)
-- [ ] **B2–B3**: batches to ~130 populated, calibration at ~50/~100, PROGRESS.md per batch
+### Phase B — iGaming (~3–5 sessions) ← **first industry (D6)**
+- [x] **B0** (session 02): frame + 116-col workbook + generated researcher brief + ~150 seed list + **the orchestration system** (`ORCHESTRATION.md`, `research_batch.js`, `populate.py`, `qa_check.py`, agent def) — write path verified end-to-end
+- [ ] **B1**: batch 1 (anchors + core operators) → QA-gate → populate → record `anchors.md`
+- [ ] **B2–B3**: batches to ~130 populated, recalibrate at ~50/~100, PROGRESS.md + ledger per batch
 - [ ] **B4**: relationships pass (`template/scripts/extract_relationships.py` adapted: SOURCE_FIELDS, TYPE_RULES, ALIASES, `is_amadeus`→incumbent flag) + hand-verify acquisition directions
-- [ ] **B5**: dashboard adaptation per `template/ADAPTATION-CHECKLIST.md` stage 3–4 (SECCOL/JSTAGES/pillars/AMA/quadrant labels/narratives/example chips from frame.md; **header toggle Gaming·FMCG·Luxury**; industry-aware `api/scenario.js` with `{industry}` param → per-industry RULES + `company_index_gaming.json`) → `viz/gaming.html` → Vercel project + env vars → **live at `/gaming`** → findings register started
-- Exit criteria: ≥120 companies all-columns-filled with evidence · dashboard deployed · AI simulator answers a gaming scenario correctly · FINDINGS-gaming.md has ≥5 evidence-backed entries
+- [ ] **B5**: dashboard adaptation per `template/ADAPTATION-CHECKLIST.md` stage 3–4 (SECCOL/JSTAGES/pillars/AMA/quadrant labels/narratives/example chips from frame.md; **4-way header toggle iGaming·Gaming·FMCG·Luxury**; industry-aware `api/scenario.js` with `{industry}` param → per-industry RULES + `company_index_igaming.json`) → `viz/igaming.html` → Vercel project + env vars → **live at `/igaming`** → findings register started
+- Exit criteria: ≥120 companies all-columns-filled with evidence · dashboard deployed · AI simulator answers an iGaming scenario correctly · FINDINGS-igaming.md has ≥5 evidence-backed entries
 
-### Phase C — FMCG (~3–4 sessions)
-- [ ] Same pipeline (C1 frame review → seed → batches → relationships → build `/fmcg`). Faster: populate.py, toggle, api pattern all exist. Toggle goes live on the gaming page too.
+### Phase C — Gaming (~3–4 sessions)
+- [ ] Same pipeline (frame review → seed → batches → relationships → build `/gaming`). Faster: the whole orchestration system already exists; only `INDUSTRIES['gaming']` needs its sectors/pillars filled in and a seed list written.
 
-### Phase D — Luxury (~3–4 sessions)
-- [ ] Same pipeline → `/luxury`. Toggle now 3-way everywhere.
+### Phase D — FMCG (~3–4 sessions)
+- [ ] Same pipeline → `/fmcg`.
 
-### Phase E — Portfolio polish (~1–2 sessions)
+### Phase E — Luxury (~3–4 sessions)
+- [ ] Same pipeline → `/luxury`. Toggle now 4-way everywhere.
+
+### Phase F — Portfolio polish (~1–2 sessions)
 - [ ] `viz/index.html` landing (project story, the three frames, methodology note, your name/contact) — the CV link
 - [ ] Cross-industry README for the public repo (screenshots, architecture, "how it was built")
 - [ ] Final QA sweep: every tab/filter/card/scenario per industry; KV cache; passcode; mobile check

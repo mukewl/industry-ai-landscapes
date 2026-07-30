@@ -12,8 +12,10 @@ industries/*/data/scenarios/
 backups/
 ~$*.xlsx
 
-# Session-local
-.claude/
+# Session-local — but the agent definitions ARE part of the orchestration system
+.claude/*
+!.claude/agents/
+!.claude/agents/**
 
 # Python / Node
 __pycache__/
