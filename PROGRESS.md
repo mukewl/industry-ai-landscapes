@@ -2,18 +2,16 @@
 
 > The resume point. Update after every batch/milestone, not just session end.
 
-**Last updated:** 2026-07-13 (session 02 — iGaming + orchestration system)
-**Current phase:** B (iGaming population) — **14 / ~130 companies populated**, QA green.
+**Last updated:** 2026-07-13 (session 02)
+**Current phase:** B (iGaming population) — **25 / ~130 companies**, QA 10 passed / 0 failed.
 
-> ⛔ **BLOCKED: monthly spend limit reached.** The last fleet run died with "You've hit your monthly
-> spend limit" (not a session limit). **Do not launch research agents until this is resolved** —
-> they fail instantly and the run is wasted. Resolve by raising the limit at
-> claude.ai/settings/usage or waiting for the monthly reset. Everything else (populate, QA,
-> dashboard work, analysis) still works fine.
+**Measured research cost: ~28k tokens per company** (`perAgent`=4, thematically grouped).
+Do NOT set `perAgent`=1 — measured at 68k/company, 2.5x worse. See DECISIONS D11.
+Remaining ~105 companies ≈ 2.9M tokens at current settings — worth a scope decision with
+the user (a 60-70 company landscape is still credible) before running the long tail.
 
-**Remaining from batch 02 (11 companies, re-run when unblocked):** evoke plc (888/William Hill) ·
-Kindred Group · Super Group (Betway) · Playtech · Pragmatic Play · Kambi Group · SoftSwiss ·
-Paysafe · Kalshi · Underdog Fantasy · GeoComply
+**Next action:** pick the next ~25 from `industries/igaming/seedlist.md` P1/P2 (skip the 25
+already in the workbook), group them thematically, run `research_batch.js` with perAgent=4.
 
 ## Status board
 
