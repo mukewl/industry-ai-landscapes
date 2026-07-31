@@ -9,10 +9,13 @@ The population system: **Opus plans, instructs and QA-gates; Sonnet agents do th
   └───────────────────────────┬───────────────────────────────────────┘
                               ▼  Workflow: scripts/research_batch.js
         ┌──────────┬──────────┬──────────┬──────────┬──────────┐
-        │ sonnet 1 │ sonnet 2 │ sonnet 3 │ sonnet 4 │ sonnet 5 │   ← .claude/agents/company-researcher.md
-        │  5 cos   │  5 cos   │  5 cos   │  5 cos   │  5 cos   │     WebSearch + WebFetch, schema-validated JSON out
-        └──────────┴──────────┴──────────┴─────┬────┴──────────┘
-                              ▼  {rows:[...]}
+        │ sonnet 1 │ sonnet 2 │ sonnet 3 │ sonnet 4 │ sonnet 5 │   ← WebSearch + WebFetch
+        │ 3-5 cos  │ 3-5 cos  │ 3-5 cos  │ 3-5 cos  │ 3-5 cos  │
+        └────┬─────┴────┬─────┴────┬─────┴────┬─────┴────┬─────┘
+             ▼          ▼          ▼          ▼          ▼
+        batches/raw/<company>.json  ← WRITTEN THE MOMENT EACH COMPANY IS DONE
+             └──────────┴──────────┴──────────┴──────────┘
+                              ▼  {rows:[...]} (happy path) — disk is the safety net
   ┌─ OPUS QA-GATE (before anything is written) ──────────────────────┐
   │ 3. schema/evidence/anchor/sanity review → accept · fix · re-run   │
   └───────────────────────────┬───────────────────────────────────────┘
@@ -69,6 +72,32 @@ Before any batch is written:
 7. **Duplicates/subsidiaries** — check `notes` for flagged overlaps (e.g. NetEnt inside Evolution). One row per legal entity.
 
 Outcomes: **accept** → populate · **fix** → edit the JSON (small factual corrections are fine, log them) · **re-run** → send the company back through with a sharper prompt.
+
+## Crash safety — read this before running anything
+
+Long fleet runs **will** be killed by usage limits. This happened twice while building this
+system (5 agents / 237k tokens / 0 rows, then 3 agents / 0 rows) because workflow agents only
+return their result at the very end — a kill mid-flight loses everything.
+
+**The fix: agents write one JSON file per company to `industries/<ind>/batches/raw/` the instant
+that company is researched**, before starting the next one. Disk is the safety net; the
+workflow's return value is just the happy path.
+
+Recovery after any interruption:
+
+```bash
+ls industries/<ind>/batches/raw/*.json          # what survived
+python -X utf8 scripts/populate.py <ind> --from-raw --dry-run
+python -X utf8 scripts/populate.py <ind> --from-raw     # ingests, then retires files to raw/consumed/
+python -X utf8 scripts/qa_check.py <ind>
+```
+
+Then re-run **only** the companies still missing (compare the workbook's company list against the
+batch list — `populate.py` is idempotent, so a re-run of an already-written company updates rather
+than duplicates, but re-researching one is wasted tokens).
+
+**Never assume a run's tokens produced data.** Check the workbook and `batches/ledger.md` first —
+nothing exists until `populate.py` has run.
 
 ## Scale knobs
 

@@ -22,7 +22,15 @@ Three AI-disruption landscape dashboards — **gaming · FMCG · luxury** — bu
 
 ## Population rules (the multi-session core)
 
-> **The mechanics live in `ORCHESTRATION.md`** — Opus plans/instructs/QA-gates, Sonnet agents research via `scripts/research_batch.js`, `populate.py` writes, `qa_check.py` gates. Read it before running a batch. Nothing is persisted until `populate.py` runs, so **always check the workbook + `batches/ledger.md` before re-running a batch** (a fleet can die on the usage limit and return nothing).
+> **The mechanics live in `ORCHESTRATION.md`** — Opus plans/instructs/QA-gates, Sonnet agents research via `scripts/research_batch.js`, `populate.py` writes, `qa_check.py` gates. Read it before running a batch.
+>
+> **Crash safety (learned the hard way — two fleets lost to usage limits):** research agents write **one JSON file per company** to `industries/<ind>/batches/raw/` the instant that company is done, so a mid-run kill never wastes completed research. **First action of any session that follows an interruption:**
+> ```
+> ls industries/<ind>/batches/raw/*.json        # what survived
+> python -X utf8 scripts/populate.py <ind> --from-raw
+> python -X utf8 scripts/qa_check.py <ind>
+> ```
+> Then re-run only the companies still missing. Never assume a run's tokens produced data — check the workbook and `batches/ledger.md` first.
 
 - Research agents fill workbooks **one industry at a time**, in batches of ~15–25 companies, scoring every signal 0–5 **against the workbook's Scoring Guide anchors** — never gut feel.
 - **Every row carries evidence**: `Evidence links` (source URLs), `Evidence notes`, `Confidence` (H/M/L), `Researched on/by`. A row without evidence is a rumor, not data.

@@ -2,6 +2,12 @@
 
     python -X utf8 scripts/populate.py igaming batches/igaming-batch-01.json
     python -X utf8 scripts/populate.py igaming batches/igaming-batch-01.json --dry-run
+    python -X utf8 scripts/populate.py igaming --from-raw      # crash-recovery mode
+
+--from-raw ingests every per-company file the research agents dropped in
+`industries/<ind>/batches/raw/` (they write one file per company the moment it is
+researched, so a usage-limit kill never wastes completed work), then moves the
+consumed files to `raw/consumed/` so the audit trail survives without re-ingesting.
 
 Derived scores (W%/D%/AI%/R/EPI/tier/quadrant/financial health) are computed HERE
 in Python and written as PLAIN VALUES — never Excel formulas (decision D5): openpyxl
@@ -147,17 +153,52 @@ def build_field_map(row, headers):
     return {k: v for k, v in vals.items() if v is not None}
 
 
+def load_rows(payload):
+    """Accept {rows:[...]}, {companies:[...]}, [ ... ], or a single company object."""
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        for key in ("rows", "companies"):
+            if isinstance(payload.get(key), list):
+                return payload[key]
+        if payload.get("name"):
+            return [payload]
+    return []
+
+
 def main():
     if len(sys.argv) < 3:
         sys.exit(__doc__)
-    industry, batch_path = sys.argv[1], Path(sys.argv[2])
+    industry = sys.argv[1]
     dry = "--dry-run" in sys.argv
-    if not batch_path.is_absolute():
-        batch_path = ROOT / batch_path
-    payload = json.loads(batch_path.read_text(encoding="utf-8"))
-    rows = payload.get("rows", payload if isinstance(payload, list) else [])
+    raw_mode = "--from-raw" in sys.argv
+
+    raw_dir = ROOT / "industries" / industry / "batches" / "raw"
+    consumed_files = []
+    if raw_mode:
+        files = sorted(p for p in raw_dir.glob("*.json") if p.is_file())
+        if not files:
+            sys.exit(f"no per-company files in {raw_dir}")
+        rows, seen = [], set()
+        for p in files:
+            try:
+                for row in load_rows(json.loads(p.read_text(encoding="utf-8"))):
+                    name = (row.get("name") or "").strip().lower()
+                    if name and name not in seen:      # last write per company wins
+                        seen.add(name)
+                        rows.append(row)
+                consumed_files.append(p)
+            except Exception as exc:
+                print(f"skipping unreadable {p.name}: {exc}")
+        batch_path = raw_dir
+        print(f"--from-raw: {len(consumed_files)} files → {len(rows)} unique companies")
+    else:
+        batch_path = Path(sys.argv[2])
+        if not batch_path.is_absolute():
+            batch_path = ROOT / batch_path
+        rows = load_rows(json.loads(batch_path.read_text(encoding="utf-8")))
     if not rows:
-        sys.exit("no rows in batch file")
+        sys.exit("no rows to write")
 
     wb_path = ROOT / "industries" / industry / f"{industry}_landscape.xlsx"
     wb = openpyxl.load_workbook(wb_path)
@@ -198,6 +239,14 @@ def main():
         print(f"DRY RUN — would add {added}, update {updated}, skip {skipped}")
         return
     wb.save(wb_path)
+
+    # crash-recovery: retire consumed per-company files so they aren't re-ingested
+    if consumed_files:
+        done_dir = raw_dir / "consumed"
+        done_dir.mkdir(parents=True, exist_ok=True)
+        for p in consumed_files:
+            p.replace(done_dir / p.name)
+        print(f"moved {len(consumed_files)} raw files → {done_dir.relative_to(ROOT)}")
 
     ledger = ROOT / "industries" / industry / "batches" / "ledger.md"
     ledger.parent.mkdir(parents=True, exist_ok=True)
