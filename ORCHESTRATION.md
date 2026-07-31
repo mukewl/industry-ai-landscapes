@@ -103,7 +103,15 @@ nothing exists until `populate.py` has run.
 
 Measured before optimisation: **~31k tokens per company** (470k for a 15-company batch). That is the thing to manage; everything else in this pipeline is nearly free.
 
-- **`perAgent` = 1 (default, and the single biggest lever).** Context accumulates *within* an agent: with 5 companies per agent, company 5 pays to carry companies 1–4's search results in every turn — cost grows roughly quadratically. One company per agent keeps each run flat. The extra per-agent overhead (re-reading the brief, ~3k) is far smaller than the accumulation it avoids.
+**Measured, not theorised** — the intuitive fix turned out to be backwards:
+
+| Config | Tokens / company | Run |
+|---|---|---|
+| `perAgent` = 5 | **27k** | batch 01, 10 companies |
+| `perAgent` = 1 | **68k** | canary, 3 companies — 2.5× worse |
+
+- **`perAgent` = 4 (default).** Do *not* drop it to 1. Every agent turn re-sends the entire context (system prompt + tool definitions + schema + brief), so fixed overhead is paid **per turn** — more agents multiplies that overhead rather than amortizing it. Grouping companies also lets one search inform several.
+- **Group each chunk thematically** (all operators together, all suppliers together) so searches overlap.
 - **Research budget in the prompt** — max 3 searches, max 2 WebFetch and only when snippets genuinely can't answer a field. Fetching full pages is the most expensive single action an agent takes.
 - **Read only `researcher_brief.md` + `anchors.md`.** Every extra file is re-read by every agent.
 - **Keep the brief short.** It is fixed overhead multiplied by company count.

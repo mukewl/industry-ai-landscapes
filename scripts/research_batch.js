@@ -14,10 +14,15 @@ if (typeof A === 'string') { try { A = JSON.parse(A) } catch (e) { A = {} } }
 A = A || {}
 const industry = A.industry || 'igaming'
 const companies = A.companies || []
-// perAgent=1 by default ON PURPOSE. Context accumulates within an agent: with 5
-// companies per agent, company 5 pays to carry companies 1-4's search results in
-// every turn (~quadratic cost). One company per agent keeps each run flat and cheap.
-const perAgent = A.perAgent || 1
+// perAgent=4, set from MEASUREMENT not theory:
+//   perAgent=5 -> 27k tokens/company (batch 01, 10 companies)
+//   perAgent=1 -> 68k tokens/company (canary, 3 companies)  <-- 2.5x WORSE
+// Every agent turn re-sends the full context (system prompt + tool defs + schema +
+// brief), so fixed overhead is paid PER TURN. More agents multiplies that overhead
+// instead of amortizing it. Grouping similar companies also lets one search inform
+// several. Keep companies in a chunk thematically similar (all operators, all
+// suppliers) for the same reason.
+const perAgent = A.perAgent || 4
 if (!companies.length) throw new Error('research_batch: args.companies is empty (got: ' + JSON.stringify(args).slice(0, 200) + ')')
 
 // root must be absolute — the session cwd is not necessarily the project folder
@@ -105,8 +110,13 @@ phase('Research')
 const results = await parallel(chunks.map((chunk, i) => () =>
   agent(
     [
-      `Research and score ONE company for the ${industry} disruption landscape:`,
+      `Research and score these ${chunk.length} companies for the ${industry} disruption landscape:`,
       ...chunk.map((c) => `  TARGET: ${c}`),
+      ``,
+      `Work through them ONE AT A TIME and write each to disk before starting the next`,
+      `(see CRASH SAFETY below). They are thematically similar, so a search that informs`,
+      `more than one of them is a bonus — reuse what you already found rather than`,
+      `re-searching the same ground.`,
       ``,
       `SCORING AUTHORITY — read these two files first (and only these):`,
       `  - \`${brief}\` : frame, sector taxonomy, verticals, value chain, 0/3/5 anchors.`,
