@@ -99,11 +99,18 @@ than duplicates, but re-researching one is wasted tokens).
 **Never assume a run's tokens produced data.** Check the workbook and `batches/ledger.md` first —
 nothing exists until `populate.py` has run.
 
-## Scale knobs
+## Token cost — the knobs that actually matter
 
-- `perAgent` (default 5) and batch size — 25/batch (5×5) is the tuned default: big enough to be efficient, small enough that a bad spec is caught before it wastes a lot of tokens.
-- The concurrency cap is `min(16, cores-2)`; batches larger than ~50 just queue.
-- Cost scales roughly linearly with companies. Re-runs are cheap relative to a bad dataset.
+Measured before optimisation: **~31k tokens per company** (470k for a 15-company batch). That is the thing to manage; everything else in this pipeline is nearly free.
+
+- **`perAgent` = 1 (default, and the single biggest lever).** Context accumulates *within* an agent: with 5 companies per agent, company 5 pays to carry companies 1–4's search results in every turn — cost grows roughly quadratically. One company per agent keeps each run flat. The extra per-agent overhead (re-reading the brief, ~3k) is far smaller than the accumulation it avoids.
+- **Research budget in the prompt** — max 3 searches, max 2 WebFetch and only when snippets genuinely can't answer a field. Fetching full pages is the most expensive single action an agent takes.
+- **Read only `researcher_brief.md` + `anchors.md`.** Every extra file is re-read by every agent.
+- **Keep the brief short.** It is fixed overhead multiplied by company count.
+- Output is minor next to input: ≤10-word justifications, `f_notes` optional.
+- Concurrency cap is `min(16, cores-2)`; larger batches just queue, they don't cost more.
+
+**Batch sizing is about risk, not cost** — cost is per company either way. Smaller batches simply mean less exposure when a run is killed (and with crash-safety, even that is now bounded to the one company in flight per agent).
 
 ## Calibration protocol
 

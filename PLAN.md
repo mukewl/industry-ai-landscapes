@@ -42,14 +42,22 @@ Per-industry meaning lives in each workbook's **Scoring Guide** sheet (signal de
 - [ ] **B5**: dashboard adaptation per `template/ADAPTATION-CHECKLIST.md` stage 3–4 (SECCOL/JSTAGES/pillars/AMA/quadrant labels/narratives/example chips from frame.md; **4-way header toggle iGaming·Gaming·FMCG·Luxury**; industry-aware `api/scenario.js` with `{industry}` param → per-industry RULES + `company_index_igaming.json`) → `viz/igaming.html` → Vercel project + env vars → **live at `/igaming`** → findings register started
 - Exit criteria: ≥120 companies all-columns-filled with evidence · dashboard deployed · AI simulator answers an iGaming scenario correctly · FINDINGS-igaming.md has ≥5 evidence-backed entries
 
-### Phase C — Gaming (~3–4 sessions)
-- [ ] Same pipeline (frame review → seed → batches → relationships → build `/gaming`). Faster: the whole orchestration system already exists; only `INDUSTRIES['gaming']` needs its sectors/pillars filled in and a seed list written.
+---
 
-### Phase D — FMCG (~3–4 sessions)
+## ⏸ Phases C–E are DEFERRED (decision D10, 2026-07-13)
+
+**We finish iGaming end-to-end first** — populated, analysed, dashboard built and deployed — and only then decide whether to do a second industry at all. Reasons: token cost is the binding constraint (~470k per 15-company batch before optimisation), and one deep, finished, deployed landscape is a stronger portfolio piece than four half-populated ones.
+
+The machinery is industry-agnostic and stays ready: `gaming`, `fmcg` and `luxury` already have skeleton workbooks and draft frames, and `ORCHESTRATION.md` § "Adding a new industry" is a 4-step recipe. Nothing is lost by waiting; the toggle simply ships with one industry (or is hidden) until a second one exists.
+
+### Phase C — Gaming (deferred)
+- [ ] Frame review → seed list → batches → relationships → build `/gaming`. Only `INDUSTRIES['gaming']` needs its sectors/pillars filled in.
+
+### Phase D — FMCG (deferred)
 - [ ] Same pipeline → `/fmcg`.
 
-### Phase E — Luxury (~3–4 sessions)
-- [ ] Same pipeline → `/luxury`. Toggle now 4-way everywhere.
+### Phase E — Luxury (deferred)
+- [ ] Same pipeline → `/luxury`.
 
 ### Phase F — Portfolio polish (~1–2 sessions)
 - [ ] `viz/index.html` landing (project story, the three frames, methodology note, your name/contact) — the CV link

@@ -1,0 +1,4 @@
+# Keep scripts LF-only: CR bytes break the Workflow permission validator
+*.js text eol=lf
+*.py text eol=lf
+*.json text eol=lf
