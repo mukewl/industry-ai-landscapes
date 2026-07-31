@@ -3,7 +3,17 @@
 > The resume point. Update after every batch/milestone, not just session end.
 
 **Last updated:** 2026-07-13 (session 02 — iGaming + orchestration system)
-**Current phase:** B (iGaming population).
+**Current phase:** B (iGaming population) — **14 / ~130 companies populated**, QA green.
+
+> ⛔ **BLOCKED: monthly spend limit reached.** The last fleet run died with "You've hit your monthly
+> spend limit" (not a session limit). **Do not launch research agents until this is resolved** —
+> they fail instantly and the run is wasted. Resolve by raising the limit at
+> claude.ai/settings/usage or waiting for the monthly reset. Everything else (populate, QA,
+> dashboard work, analysis) still works fine.
+
+**Remaining from batch 02 (11 companies, re-run when unblocked):** evoke plc (888/William Hill) ·
+Kindred Group · Super Group (Betway) · Playtech · Pragmatic Play · Kambi Group · SoftSwiss ·
+Paysafe · Kalshi · Underdog Fantasy · GeoComply
 
 ## Status board
 
