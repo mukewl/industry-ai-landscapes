@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/viz/igaming.html" },
+    { "source": "/igaming", "destination": "/viz/igaming.html" }
+  ]
+}

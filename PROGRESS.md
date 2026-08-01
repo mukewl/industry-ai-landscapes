@@ -10,8 +10,7 @@ Do NOT set `perAgent`=1 — measured at 68k/company, 2.5x worse. See DECISIONS D
 Remaining ~105 companies ≈ 2.9M tokens at current settings — worth a scope decision with
 the user (a 60-70 company landscape is still credible) before running the long tail.
 
-**Next action:** pick the next ~25 from `industries/igaming/seedlist.md` P1/P2 (skip the 25
-already in the workbook), group them thematically, run `research_batch.js` with perAgent=4.
+**Next action:** deploy to Vercel, then either extend the dataset (next ~25 from `seedlist.md`) or set `LINKEDIN_URL` in `scripts/build_igaming_dashboard.py` and share.
 
 ## Status board
 
@@ -24,7 +23,7 @@ already in the workbook), group them thematically, run `research_batch.js` with 
 | **Populated companies** | **see ledger / ~130** | **0 / ~130** | **0 / ~130** | **0 / ~130** |
 | Calibration anchors | batch 1 → `anchors.md` | — | — | — |
 | Relationships pass | — | — | — | — |
-| Dashboard adapted + built | — | — | — | — |
+| Dashboard adapted + built | ✅ `viz/igaming.html` | — | — | — |
 | Deployed | — | — | — | — |
 | Findings register | — | — | — | — |
 
