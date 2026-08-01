@@ -10,7 +10,7 @@ Do NOT set `perAgent`=1 — measured at 68k/company, 2.5x worse. See DECISIONS D
 Remaining ~105 companies ≈ 2.9M tokens at current settings — worth a scope decision with
 the user (a 60-70 company landscape is still credible) before running the long tail.
 
-**Next action:** deploy to Vercel, then either extend the dataset (next ~25 from `seedlist.md`) or set `LINKEDIN_URL` in `scripts/build_igaming_dashboard.py` and share.
+**Next action:** user adds `GEMINI_API_KEY` + `SCENARIO_PASSCODE` on Vercel (activates the Ask-the-radar bar), sends the LinkedIn URL for the byline; then extend the dataset or write the application cover note (see `industries/igaming/betsson-research.md`).
 
 ## Status board
 
@@ -23,7 +23,7 @@ the user (a 60-70 company landscape is still credible) before running the long t
 | **Populated companies** | **see ledger / ~130** | **0 / ~130** | **0 / ~130** | **0 / ~130** |
 | Calibration anchors | batch 1 → `anchors.md` | — | — | — |
 | Relationships pass | — | — | — | — |
-| Dashboard adapted + built | ✅ `viz/igaming.html` | — | — | — |
+| Dashboard adapted + built | ✅ AI Radar (`viz/igaming.html`) | — | — | — |
 | Deployed | — | — | — | — |
 | Findings register | — | — | — | — |
 

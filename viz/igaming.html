@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iGaming · AI Disruption Constellation</title>
+<title>iGaming AI Radar · the landscape from Betsson's bridge</title>
 <style>
 :root{color-scheme:dark;
  --bg:#070b18;--panel:rgba(9,13,26,.9);--panel2:#141b33;--line:#232c48;
@@ -50,6 +50,44 @@ main{flex:1;overflow:hidden;display:flex}
 #zoomctl button{background:none;border:none;color:#c3cce0;width:30px;height:28px;cursor:pointer;font-size:16px}
 #zoomctl button+button{border-top:1px solid var(--line)}
 #zoomctl button:hover{background:#1a2342;color:#fff}
+/* lenses */
+.lensbtn{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;color:#aab4d4;padding:5px 8px;cursor:pointer;font-size:12.5px;transition:background var(--t1) var(--ease),border-color var(--t1) var(--ease)}
+.lensbtn:hover{background:#141b33}
+.lensbtn.on{background:#1a2342;border-color:#33406e;color:#fff}
+.lensbtn .lc{margin-left:6px;color:var(--mut);font-size:11px}
+.lenscap{font-size:11.5px;color:#aab4d4;line-height:1.55;background:#101728;border-left:2px solid var(--gold);border-radius:0 8px 8px 0;padding:8px 10px;margin-top:6px}
+/* ask bar */
+#askbar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:7;width:min(620px,72%)}
+.abRow{display:flex;gap:7px;background:var(--panel);backdrop-filter:blur(7px);border:1px solid #2f3c63;border-radius:13px;padding:7px 8px;box-shadow:0 10px 34px #0009}
+#askInput{flex:1;background:#0e1626;border:1px solid #2a3550;color:var(--tx);border-radius:9px;padding:9px 12px;font-size:13.5px;outline:none}
+#askInput:focus{border-color:var(--ac)}
+#askGo{background:linear-gradient(180deg,#f6d56a,#d9ab2e);border:none;color:#241d05;font-weight:600;border-radius:9px;padding:9px 15px;cursor:pointer;font-size:13px;white-space:nowrap}
+#askGo:hover{filter:brightness(1.06)}
+#askClear{background:#1a2342;border:1px solid #33406e;color:#cdd6ea;border-radius:9px;padding:9px 11px;cursor:pointer}
+.askfb{min-height:15px;font-size:11.5px;margin-top:5px;color:var(--tx2);text-align:center;transition:opacity .18s var(--ease)}
+.askfb.err{color:#ff9aa6}.askfb.think{color:#9fb4ff}
+#askProg{display:none;margin-top:6px;height:4px;background:#161f33;border-radius:3px;overflow:hidden;opacity:1;transition:opacity var(--t2) var(--ease)}
+#askProg.on{display:block}
+#askProg i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,#f6d56a,#6ea8fe,#f6d56a);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+@keyframes shimmer{from{background-position:0% 0}to{background-position:-200% 0}}
+/* briefing card */
+#briefing{position:fixed;inset:0;background:rgba(4,7,15,.72);backdrop-filter:blur(4px);z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--t2) var(--ease),visibility 0s linear var(--t2)}
+#briefing.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity var(--t2) var(--ease)}
+.bCard{width:min(680px,94vw);max-height:88vh;display:flex;flex-direction:column;background:linear-gradient(180deg,#121a2e,#0c1220);border:1px solid #2a3550;border-radius:15px;box-shadow:0 30px 90px #000b;overflow:hidden;transform:translateY(14px) scale(.985);transition:transform var(--t3) var(--ease)}
+#briefing.on .bCard{transform:none}
+.bHead{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.bHead h3{font-size:16.5px}
+.bMeta{font-size:11.5px;color:var(--mut);margin-top:3px}
+.bBody{overflow:auto;padding:16px 20px}
+#bText{font-size:13.5px;line-height:1.65;color:#c3cce0;white-space:pre-wrap}
+.bFor{margin:13px 0;padding:10px 13px;background:#241d05;border-left:3px solid var(--gold);border-radius:0 9px 9px 0;color:#ffe9a8;font-size:13px}
+.bFor b{color:var(--gold)}
+.affrow{display:flex;align-items:center;gap:10px;padding:6px 2px;border-bottom:1px solid #131a2c;font-size:12.5px;cursor:pointer}
+.affrow:hover{background:#131a2e}
+.affrow .nm{font-weight:600;min-width:0}
+.affrow .fx{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:10px;white-space:nowrap}
+.affrow .rs{flex:1;color:var(--tx2);font-size:11.5px;text-align:right}
+.bCav{margin-top:11px;font-size:11px;color:var(--mut);font-style:italic}
 /* ================= BOARD ================= */
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
 .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
@@ -126,7 +164,7 @@ p.vs{color:var(--tx2);font-size:13px;margin-bottom:14px;max-width:80ch}
 .connrow .cty{margin-left:auto;font-size:10px;color:var(--mut);max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style></head><body>
 
-<header><h1>iGaming · AI Disruption Constellation</h1>
+<header><h1>iGaming · AI Radar <span style="color:var(--mut);font-weight:400;font-size:12.5px">— the disruption landscape, seen from Betsson's bridge</span></h1>
 <nav><button data-v="vSky" class="on">Constellation</button><button data-v="vBoard">Threat Board</button><button data-v="vFind">Findings &amp; Method</button></nav>
 <span class="stamp" id="stamp"></span></header>
 
@@ -136,17 +174,31 @@ p.vs{color:var(--tx2);font-size:13px;margin-bottom:14px;max-width:80ch}
   <div id="focusbar"><span>Focused on <b id="focusname"></b></span><button onclick="clearFocus()">✕</button></div>
   <div id="ctl">
     <h5>Find</h5><input id="nq" placeholder="Type a company…" autocomplete="off">
+    <h5>Radar lenses</h5><div id="lenses"></div><div id="lensCap" class="lenscap" style="display:none"></div>
     <h5>Constellations — click to spotlight</h5><div id="leg"></div>
     <h5>View</h5>
     <button class="fbtn" id="extBtn"><span class="st" style="width:10px;height:10px;border-radius:50%;background:#7d88aa"></span>Partner entities: shown</button>
     <button class="fbtn" id="linesBtn"><span style="width:14px;height:2px;background:#3d4a73;border-radius:2px"></span>Constellation lines: on</button>
     <h5>Reading the sky</h5>
-    <div class="hint">★ size = company scale (market cap / valuation / funding)<br>
+    <div class="hint">gold star = Betsson, the vantage point<br>★ size = company scale (market cap / valuation / funding)<br>
     red ring = High threat tier<br>
     small grey stars = named partners from the research<br>
     click a star → its dossier · drag to pan · wheel to zoom</div>
   </div>
   <div id="zoomctl"><button id="zIn">+</button><button id="zFit">⤢</button><button id="zOut">−</button></div>
+  <div id="askbar">
+    <div class="abRow">
+      <input id="askInput" type="text" autocomplete="off" placeholder="Ask the radar — e.g. what happens to Betsson if Kalshi gets EU licences?">
+      <button id="askGo">◈ Ask</button>
+      <button id="askClear" style="display:none" title="Clear">✕</button>
+    </div>
+    <div id="askFb" class="askfb"></div>
+    <div id="askProg"><i></i></div>
+  </div>
+  <div id="briefing"><div class="bCard">
+    <div class="bHead"><div style="flex:1"><h3 id="bTitle"></h3><div class="bMeta" id="bMeta"></div></div><button class="x" onclick="closeBriefing()">×</button></div>
+    <div class="bBody"><div id="bText"></div><div id="bFor" class="bFor"></div><div id="bAff"></div><div id="bCav" class="bCav"></div></div>
+  </div></div>
   <div id="foot"></div>
 </div></div>
 
@@ -198,6 +250,7 @@ function initSky(){
   secAnchor[s]={x:Math.cos(a)*330,y:Math.sin(a)*250};});
  nodes=C.map(c=>{const an=secAnchor[c.sec]||{x:0,y:0};
   return {id:c.n,ds:1,sec:c.sec,tier:c.tier,sz:c.sz,
+   gold:c.n.toLowerCase().startsWith('betsson'),   // the vantage star
    x:an.x+(Math.random()-.5)*220,y:an.y+(Math.random()-.5)*180,
    vx:0,vy:0,ph:Math.random()*6.28,deg:0};});
  D.externals.forEach(e=>{nodes.push({id:e.n,ds:0,sz:1.6+Math.sqrt(e.deg)*0.9,
@@ -263,12 +316,28 @@ function mstSector(sec){
   segs.push([inTree[bi],rest[bj]]);inTree.push(rest[bj]);rest.splice(bj,1);}
  return segs;
 }
+/* lenses (D17 reframe): predicate-based spotlights over the same sky */
+let lens=null, radarSet=null, radarFx={};
+const LENSES={
+ acq:{name:'Acquisition risk',
+  test:c=>c.sec==='Affiliate & media'||(c.sig.w[4]||0)>=4,
+  cap:'Betsson spends ~21% of B2C revenue on marketing + affiliates while AI search breaks the rail: organic clicks fall 61% under AI Overviews and 71% of affiliate sites were hit by the March 2026 core update. Lit stars either carry that affiliate risk or already own the player intent Betsson is paying to rent.'},
+ ma:{name:'M&A radar',
+  test:c=>Object.values(c.pill).filter(Boolean).length===2||['At-risk','Distressed'].includes(c.sv),
+  cap:'Betsson holds a €75m facility earmarked for "entering new markets or acquiring valuable technologies." Lit stars are one pillar away from a full stack, or strategically valuable but financially at risk — the two classic acquisition profiles.'},
+ watch:{name:'Watchtower',
+  test:c=>c.sec==='AI-native & prediction markets'||c.hz==='0-12m',
+  cap:'"A very interesting market segment… no plans to enter as of now" — CEO Pontus Lindwall on prediction markets, Feb 2026. Watching without entering needs a watchtower: these are the stars moving inside 12 months, led by the prediction-market flank.'}};
 function dimOf(n){
+ if(radarSet)return radarSet.has(n.id)?1:0.12;
  if(focusSet)return focusSet.has(n.id)?1:0.13;
+ if(lens){const c=byName[n.id];
+  if(n.gold)return 1;                       // the vantage star never dims
+  return (c&&LENSES[lens].test(c))?1:(n.ds?0.14:0.08);}
  if(secSpot)return (n.ds&&n.sec===secSpot)?1:(n.ds?0.15:0.1);
  return 1;
 }
-function starR(n){return n.ds?(1.2+n.sz*0.9):(0.8+n.sz*0.8);}
+function starR(n){return n.gold?(2.2+n.sz*0.95):n.ds?(1.2+n.sz*0.9):(0.8+n.sz*0.8);}
 function draw(){
  T+=0.016;
  const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
@@ -302,20 +371,27 @@ function draw(){
  nodes.forEach(n=>{
   if(!showExt&&!n.ds)return;
   const dm=dimOf(n);if(dm<0.05)return;
-  const r=starR(n),col=n.ds?(SECCOL[n.sec]||'#9fb0cc'):EXTCOL;
+  const r=starR(n),col=n.gold?'#ffd54f':n.ds?(SECCOL[n.sec]||'#9fb0cc'):EXTCOL;
   const tw=(n.sz<4?(0.82+0.18*Math.sin(T*1.4+n.ph)):1)*dm;
-  ctx.globalAlpha=0.16*tw;ctx.fillStyle=col;
-  ctx.beginPath();ctx.arc(n.x,n.y,r*2.6,0,7);ctx.fill();
+  ctx.globalAlpha=(n.gold?0.22:0.16)*tw;ctx.fillStyle=col;
+  ctx.beginPath();ctx.arc(n.x,n.y,r*(n.gold?3.1:2.6),0,7);ctx.fill();
   ctx.globalAlpha=tw;ctx.beginPath();ctx.arc(n.x,n.y,r,0,7);ctx.fill();
-  if(r>6){ctx.globalAlpha=0.5*tw;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(n.x,n.y,r*0.38,0,7);ctx.fill();}
+  if(r>6||n.gold){ctx.globalAlpha=0.5*tw;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(n.x,n.y,r*0.38,0,7);ctx.fill();}
+  if(n.gold){ctx.globalAlpha=0.7*dm;ctx.strokeStyle='#ffd54f';ctx.lineWidth=1.2;
+   ctx.beginPath();ctx.arc(n.x,n.y,r+4+1.2*Math.sin(T*1.2),0,7);ctx.stroke();}
   if(n.ds&&n.tier==='High'){ctx.globalAlpha=0.85*dm;ctx.strokeStyle='#ff5b72';ctx.lineWidth=1.1;
    ctx.beginPath();ctx.arc(n.x,n.y,r+2.4,0,7);ctx.stroke();}
+  const fx=radarFx[n.id];
+  if(fx){const fc={rises:'#ff8e9d',falls:'#7fb4f5',exposed:'#ffb74d',watch:'#e879f9',opportunity:'#5fd99a'}[fx]||'#fff';
+   ctx.globalAlpha=0.6+0.35*Math.sin(T*2.4+n.ph);ctx.strokeStyle=fc;ctx.lineWidth=1.6;
+   ctx.setLineDash(fx==='watch'?[3,3]:[]);
+   ctx.beginPath();ctx.arc(n.x,n.y,r+5,0,7);ctx.stroke();ctx.setLineDash([]);}
   if(n===hoverN||n.id===focusId){ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=1.4;
    ctx.beginPath();ctx.arc(n.x,n.y,r+3.6,0,7);ctx.stroke();}
   // labels: EVERY company star is named — the luxury of n=25
   const showLbl=n.ds||n===hoverN||n.id===focusId||(focusSet&&focusSet.has(n.id))||zoom>1.8;
-  if(showLbl){ctx.fillStyle=n.ds?'#c9d2ea':'#8a93ad';
-   ctx.font=(n.ds?'600 ':'')+(n.ds?'10.5px ':'9px ')+'"Segoe UI"';
+  if(showLbl){ctx.fillStyle=n.gold?'#ffd54f':n.ds?'#c9d2ea':'#8a93ad';
+   ctx.font=(n.ds?'600 ':'')+(n.gold?'11.5px ':n.ds?'10.5px ':'9px ')+'"Segoe UI"';
    ctx.globalAlpha=(n.ds?0.92:0.75)*dm;
    ctx.fillText(n.id.length>26?n.id.slice(0,25)+'…':n.id,n.x+r+4,n.y+3.5);}
   ctx.globalAlpha=1;});
@@ -367,6 +443,83 @@ document.getElementById('nq').onkeydown=e=>{
  const q=e.target.value.toLowerCase().trim();if(!q)return;
  const n=nodes.find(n=>n.id.toLowerCase().includes(q));
  if(n){cx=n.x;cy=n.y;zoom=Math.max(zoom,1.6);setFocus(n.id);}};
+/* ================= LENSES ================= */
+(function(){
+ const box=document.getElementById('lenses');
+ box.innerHTML=Object.keys(LENSES).map(k=>{
+  const n=C.filter(c=>LENSES[k].test(c)).length;
+  return '<button class="lensbtn" data-l="'+k+'">'+LENSES[k].name+'<span class="lc">'+n+' stars</span></button>';}).join('');
+ box.querySelectorAll('.lensbtn').forEach(b=>b.onclick=()=>{
+  lens=(lens===b.dataset.l)?null:b.dataset.l;
+  secSpot=null;document.querySelectorAll('#leg .lgrow').forEach(x=>x.classList.remove('off'));
+  box.querySelectorAll('.lensbtn').forEach(x=>x.classList.toggle('on',x.dataset.l===lens));
+  const cap=document.getElementById('lensCap');
+  if(lens){cap.style.display='block';cap.textContent=LENSES[lens].cap;}
+  else cap.style.display='none';
+  alpha=Math.max(alpha,.3);});
+})();
+
+/* ================= ASK THE RADAR ================= */
+let askBusy=false,progMsgT=null;
+const ASK_MSGS=['Sweeping the sky…','Reading the dossiers…','Writing the briefing…'];
+function askProg(on){
+ const p=document.getElementById('askProg'),f=p.querySelector('i'),fb=document.getElementById('askFb');
+ if(on){p.classList.add('on');f.style.transition='none';f.style.width='0%';void f.offsetWidth;
+  f.style.transition='width 16s cubic-bezier(.05,.7,.1,1)';f.style.width='92%';
+  let i=0;fb.textContent=ASK_MSGS[0];fb.className='askfb think';
+  progMsgT=setInterval(()=>{i=(i+1)%ASK_MSGS.length;fb.textContent=ASK_MSGS[i];},2600);}
+ else{if(progMsgT){clearInterval(progMsgT);progMsgT=null;}
+  f.style.transition='width .3s';f.style.width='100%';
+  setTimeout(()=>{p.classList.remove('on');f.style.transition='none';f.style.width='0%';},320);}
+}
+function getPass(){let p=sessionStorage.getItem('radarPass');if(p)return p;
+ p=prompt('Enter the radar passcode:');if(p===null)return null;
+ p=p.trim();if(p)sessionStorage.setItem('radarPass',p);return p;}
+function clearRadar(){radarSet=null;radarFx={};
+ document.getElementById('askClear').style.display='none';
+ document.getElementById('askInput').value='';
+ document.getElementById('askFb').textContent='';}
+function closeBriefing(){document.getElementById('briefing').classList.remove('on');}
+function renderBriefing(q,out){
+ document.getElementById('bTitle').textContent=out.title||'Radar briefing';
+ document.getElementById('bMeta').textContent='“'+q+'” · '+(out.confidence||'')+' confidence · grounded in the scored dataset + researched Betsson facts';
+ document.getElementById('bText').textContent=out.briefing||'';
+ document.getElementById('bFor').innerHTML='<b>For Betsson:</b> '+esc(out.forBetsson||'');
+ const FXC={rises:['#ff8e9d','#2a151b'],falls:['#7fb4f5','#152233'],exposed:['#ffb74d','#2a2213'],watch:['#e879f9','#26132a'],opportunity:['#5fd99a','#13251b']};
+ const aff=(out.affected||[]).filter(a=>byName[a.name]);
+ document.getElementById('bAff').innerHTML=aff.length?('<h4 style="font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);margin:14px 0 6px">On the sky</h4>'+
+  aff.map(a=>{const fc=FXC[a.effect]||['#9fb0cc','#1a2030'];
+   return '<div class="affrow" onclick="closeBriefing();jumpTo(\''+a.name.replace(/'/g,"\\'")+'\')">'+
+    '<span class="nm">'+esc(a.name)+'</span><span class="fx" style="color:'+fc[0]+';background:'+fc[1]+'">'+esc(a.effect)+'</span>'+
+    '<span class="rs">'+esc(a.reason||'')+'</span></div>';}).join('')):'';
+ document.getElementById('bCav').textContent=out.caveats||'';
+ document.getElementById('briefing').classList.add('on');
+ radarFx={};aff.forEach(a=>{radarFx[a.name]=a.effect;});
+ radarSet=new Set(aff.map(a=>a.name));
+ nodes.forEach(n=>{if(n.gold)radarSet.add(n.id);});
+ document.getElementById('askClear').style.display='inline-block';
+ alpha=Math.max(alpha,.3);
+}
+async function askRadar(){
+ if(askBusy)return;
+ const inp=document.getElementById('askInput'),fb=document.getElementById('askFb'),go=document.getElementById('askGo');
+ const q=inp.value.trim();
+ if(!q){fb.textContent='Type a question — e.g. “which of these could Betsson buy with €75m?”';fb.className='askfb err';return;}
+ const pass=getPass();if(pass===null)return;
+ askBusy=true;go.disabled=true;inp.disabled=true;askProg(true);
+ try{
+  const res=await fetch('/api/radar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,passcode:pass})});
+  if(res.status===401){sessionStorage.removeItem('radarPass');askProg(false);fb.textContent='Wrong passcode — ask again to retry.';fb.className='askfb err';return;}
+  let out=null;try{out=await res.json();}catch(e){}
+  if(!res.ok||!out||out.error){askProg(false);fb.textContent=(out&&out.error)||'The radar is unavailable right now.';fb.className='askfb err';return;}
+  askProg(false);fb.textContent='';renderBriefing(q,out);
+ }catch(e){askProg(false);fb.textContent='Couldn’t reach the radar — check your connection.';fb.className='askfb err';}
+ finally{askBusy=false;go.disabled=false;inp.disabled=false;}
+}
+document.getElementById('askGo').onclick=askRadar;
+document.getElementById('askInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();askRadar();}};
+document.getElementById('askClear').onclick=clearRadar;
+
 /* ================= DRAWER ================= */
 function gauge(label,val,col){const v=Math.max(0,Math.min(100,val||0));
  return '<div class="g"><div class="ring" style="background:conic-gradient('+col+' '+(v*3.6)+'deg,#1a2235 0)"><i>'+(val==null?'–':Math.round(v))+'</i></div><div class="gl">'+label+'</div></div>';}
@@ -402,7 +555,7 @@ function openCompany(name){
  h+='<h4>Pillars held</h4><div class="kv">'+pk.map(p=>'<span style="'+(c.pill[p[0]]?'color:#5fd99a;border-color:#1f4a34':'')+'">'+(c.pill[p[0]]?'✓ ':'✕ ')+p[1]+'</span>').join('')+'</div>';
  h+='<h4>Player journey covered</h4><div class="jstrip">'+D.stages.map((s,i)=>'<span class="jseg'+(c.vc[i]?' on':'')+'">'+esc(s)+'</span>').join('')+'</div>';
  if(c.biz)h+='<h4>Business model</h4><div class="callout">'+esc(c.biz)+'</div>';
- if(c.imp)h+='<h4>Effect on the incumbent model</h4><div class="callout imp">'+esc(c.imp)+'</div>';
+ if(c.imp)h+='<h4>What this means for Betsson</h4><div class="callout imp">'+esc(c.imp)+'</div>';
  if(c.gap)h+='<h4>What it still lacks</h4><div class="callout gap">'+esc(c.gap)+'</div>';
  h+='<h4>Scored signals — click a row for the reasoning</h4>';
  h+='<div class="sgrp">Willingness</div>'+sigRows(c,'w',D.labels.w,'W','#e7a93c');
@@ -429,7 +582,7 @@ function openExternal(name){
  document.getElementById('scrim').classList.add('on');
 }
 function closeDrawer(){document.getElementById('drawer').classList.remove('on');document.getElementById('scrim').classList.remove('on');}
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();clearFocus();}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeBriefing();closeDrawer();clearFocus();}});
 
 /* ================= THREAT BOARD ================= */
 (function(){
@@ -496,6 +649,13 @@ drawDt();
   '<li><code>Disruption score = 0.4 × Willingness + 0.6 × Readiness</code></li>'+
   '<li>Bands: ≥60 High · ≥40 Medium · below Low.</li></ul>'+
   '<p>The score measures fit to <i>this question</i>, not size — a giant with no appetite to attack its own funnel scores low by design.</p>'+
+  '<h3>Why this exists</h3>'+
+  '<p>Betsson is building an AI organisation — a Head of AI role (Malta, Center-of-Excellence remit with explicit '+
+  'competitive-radar duties), an AI platform tech lead, AI engineers — and its Director of Data &amp; AI describes the goal as '+
+  '<i>agents that answer questions in minutes instead of dashboards</i>. This radar is a working prototype of exactly that: '+
+  'a scored, sourced map of who can take the player, with lenses for the three live questions (acquisition risk under AI '+
+  'search, M&amp;A targets for the €75m facility, and the prediction-market flank the CEO says he is watching) — and a '+
+  'question bar that answers in the language of the business.</p>'+
   '<h3>Where the numbers come from</h3>'+
   '<p>Every score carries a written justification and every company cites its sources — open any star and click a signal row to see the reasoning; the links sit at the bottom of the dossier. Rows carry a confidence grade for how much public evidence was available. These are researched estimates: transparent and traceable, not audited figures.</p>';
  let h='<span>Built by <b style="color:var(--tx2)">'+esc(D.author)+'</b></span>';
