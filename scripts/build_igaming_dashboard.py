@@ -1,18 +1,15 @@
-"""Build viz/igaming.html — a self-contained iGaming disruption dashboard.
+"""Build viz/igaming.html — the iGaming disruption CONSTELLATION.
 
-Designed for THIS dataset's shape: few companies (25), deep and individually
-defensible (every score carries a justification + cited sources). That is the
-inverse of the travel/Amadeus dashboard, which solved breadth (553 companies ->
-constellation/globe). Here the hero is a positioning map, the structural view is
-a 25x18 signal matrix, and evidence is a first-class UI citizen.
+The identity of this artifact is the living star-sky from the travel project:
+deep-space background, glowing sector-coloured stars, gentle perpetual drift,
+ego-focus on click. Adapted to this dataset's strengths instead of fighting its
+size: 25 deeply-researched companies (every one permanently labelled — impossible
+at 553), ~70 external entities mined from the partnership fields as small
+satellite stars, and faint sector ASTERISMS (constellation lines linking each
+sector's stars). The evidence layer survives underneath: click any star and
+every score opens into its written justification + cited sources.
 
-Colour follows the dataviz skill and is VALIDATED, not eyeballed:
-  - positioning map: ONE hue (bubble/scatter = --pairs all, where only 3
-    categorical slots clear the CVD floors; 8 sector hues would fail). Sector is
-    an interactive filter/highlight instead of a colour encoding.
-  - signal matrix: ordinal single-hue ramp, 6 steps, validated with --ordinal.
-  - pillar view: the first 3 categorical slots, validated with --pairs all.
-Dark surface #1a1a19; deliberately a single (dark) look.
+Tabs: Constellation (hero) · Threat Board · Findings & Method.
 
     python -X utf8 scripts/build_igaming_dashboard.py
 """
@@ -28,12 +25,11 @@ INDUSTRY = "igaming"
 DATA = ROOT / "industries" / INDUSTRY / "data"
 VIZ = ROOT / "viz"
 
-# --- byline ------------------------------------------------------------------
 AUTHOR = "Mukul Shrivas"
-LINKEDIN_URL = ""   # <-- set this to render the LinkedIn link (empty = name only)
+LINKEDIN_URL = ""   # <-- set to render the LinkedIn link (empty = name only)
 GITHUB_URL = "https://github.com/mukewl/industry-ai-landscapes"
 
-# --- signal labels come from the generator so they can never drift -----------
+# signal vocabulary straight from the generator so nothing can drift
 spec = importlib.util.spec_from_file_location("mw", ROOT / "scripts" / "make_workbook.py")
 mw = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mw)
@@ -41,19 +37,30 @@ IG = mw.INDUSTRIES[INDUSTRY]
 W_LABELS = [n for n, _, _ in IG["w"]]
 D_LABELS = [n for n, _, _ in IG["d"]]
 AI_LABELS = [n for n, _, _ in mw.AI_SIGNALS]
-W_DEFS = {n: (d, a) for n, d, a in IG["w"]}
-D_DEFS = {n: (d, a) for n, d, a in IG["d"]}
-AI_DEFS = {n: (d, a) for n, d, a in mw.AI_SIGNALS}
+W_DEFS = {n: a for n, _, a in IG["w"]}
+D_DEFS = {n: a for n, _, a in IG["d"]}
+AI_DEFS = {n: a for n, _, a in mw.AI_SIGNALS}
 SECTORS = IG["sectors"]
 STAGES = IG["stages"]
-VERTICALS = IG["verticals"]
 
 companies = json.loads((DATA / "companies.json").read_text(encoding="utf-8"))
 meta = json.loads((DATA / "extract_meta.json").read_text(encoding="utf-8"))
 
-# incumbent benchmark (frame.md / DECISIONS D7)
 AMA = {"w": 35, "d": 90, "ai": 40}
 AMA["r"] = round(.5 * AMA["d"] + .5 * AMA["ai"])
+
+# vivid sky palette — one hue per sector, every company star is permanently
+# labelled so identity never rides on colour alone
+SECCOL = {
+    "Operator (B2C)": "#ff6b81",
+    "B2B supplier & platform": "#ffb74d",
+    "Data & odds": "#f0c84b",
+    "Affiliate & media": "#22d3ee",
+    "Payments & fintech": "#4ade80",
+    "AI-native & prediction markets": "#60a5fa",
+    "RegTech & compliance": "#e879f9",
+    "Big Tech platform": "#b388ff",
+}
 
 
 def num(v):
@@ -75,7 +82,6 @@ def sig(c, prefix, n):
 
 
 def parse_justifications(c):
-    """populate.py appends 'W1=3: note | W2=4: note | ...' to evidence_notes."""
     txt = str(c.get("evidence_notes") or "")
     out = {}
     for m in re.finditer(r"\b(W|D|AI|F)(\d+)=([0-9]+|None):\s*([^|]+)", txt):
@@ -83,38 +89,35 @@ def parse_justifications(c):
     return out
 
 
-def scale_of(c):
-    """Bubble area proxy: $mn scale, log-compressed. Falls back to headcount."""
+def star_size(c):
+    """Star radius: log $ scale (market cap → valuation → funding → FTE)."""
     for k in ("market_cap_valuation_mn", "post_money_valuation_mn",
               "total_funding_mn", "total_funding_raised_mn"):
         v = num(c.get(k))
         if v and v > 0:
-            return 1.0 + math.log10(v + 1)
+            return 3.2 + min(9.0, math.log10(v + 1) * 1.9)
     fte = num(c.get("ftes"))
     if fte and fte > 0:
-        return 0.8 + math.log10(fte + 1) * 0.6
-    return 0.9
+        return 3.0 + min(7.0, math.log10(fte + 1) * 1.4)
+    return 3.4
 
 
 def pillars(c, w, d):
-    demand = (w[4] or 0) >= 4
-    content = (d[0] or 0) >= 4 or str(c.get("direct_channel") or "").lower() == "y"
-    wallet = (str(c.get("merchant_of_record") or "").lower() == "y") or (d[3] or 0) >= 4
-    return {"player": demand, "product": content, "wallet": wallet}
+    return {
+        "player": (w[4] or 0) >= 4,
+        "product": (d[0] or 0) >= 4 or str(c.get("direct_channel") or "").lower() == "y",
+        "wallet": (str(c.get("merchant_of_record") or "").lower() == "y") or (d[3] or 0) >= 4,
+    }
 
 
 comp = []
 for c in companies:
-    w, d, ai = sig(c, "w", 5), sig(c, "d", 6), sig(c, "ai", 7)
-    f = sig(c, "f", 5)
-    j = parse_justifications(c)
-    p = pillars(c, w, d)
+    w, d, ai, f = sig(c, "w", 5), sig(c, "d", 6), sig(c, "ai", 7), sig(c, "f", 5)
     links = [u.strip() for u in str(c.get("evidence_links") or "").split(";") if u.strip().startswith("http")]
     comp.append({
         "n": c.get("company"),
         "sec": c.get("source_sector_taxonomy") or "Other",
-        "hq": c.get("hq") or "",
-        "founded": c.get("founded"),
+        "hq": c.get("hq") or "", "founded": c.get("founded"),
         "epi": num(c.get("entry_potential_index")),
         "w": num(c.get("willingness_pct")), "d": num(c.get("distribution_readiness_pct")),
         "ai": num(c.get("ai_readiness_pct")), "r": num(c.get("readiness_pct_combined")),
@@ -126,572 +129,607 @@ for c in companies:
         "gap": c.get("residual_gap_what_they_d_need") or "",
         "rev": c.get("revenue_traction") or "",
         "lic": c.get("licensed_jurisdictions") or "",
-        "par": c.get("existing_partnerships") or "",
-        "scale": round(scale_of(c), 2),
+        "sz": round(star_size(c), 2),
         "sig": {"w": w, "d": d, "ai": ai, "f": f},
-        "just": j,
-        "pill": p,
+        "just": parse_justifications(c),
+        "pill": pillars(c, w, d),
         "vc": [1 if str(c.get(f"vc{i+1}_{re.sub(r'[^a-z0-9]+','_',s.lower()).strip('_')}") or "").lower() == "y" else 0
                for i, s in enumerate(STAGES)],
-        "vert": [1 if str(c.get(re.sub(r"[^a-z0-9]+", "_", v.lower()).strip("_") + "_distributing") or "").lower() == "y" else 0
-                 for v in VERTICALS],
         "links": links,
     })
-
 comp.sort(key=lambda x: -(x["epi"] or 0))
 
-# ---------------- findings derived from the data (never hand-asserted) -------
-def mean(xs):
-    xs = [x for x in xs if x is not None]
-    return round(sum(xs) / len(xs)) if xs else 0
+# ---------------- relationship graph from the partnership fields -------------
+def norm_name(s):
+    s = re.sub(r"\([^)]*\)", " ", s.lower())
+    s = re.sub(r"[^a-z0-9 ]", " ", s)
+    drop = {"plc", "inc", "ab", "publ", "group", "limited", "ltd", "as", "sa",
+            "ag", "holdings", "the", "a", "s"}
+    return " ".join(t for t in s.split() if t not in drop)
 
 
-ai_mean = mean([c["ai"] for c in comp])
-ai_top = max(comp, key=lambda c: c["ai"] or 0)
-ai_over50 = [c["n"] for c in comp if (c["ai"] or 0) >= 50]
-full_stack = [c for c in comp if sum(c["pill"].values()) == 3]
-two_thirds = [c for c in comp if sum(c["pill"].values()) == 2]
-operators = [c for c in comp if c["sec"] == "Operator (B2C)"]
-op_w = mean([c["w"] for c in operators])
-challengers = [c for c in comp if c["sec"] == "AI-native & prediction markets"]
-ch_w = mean([c["w"] for c in challengers])
-top5 = comp[:5]
-b2b = [c for c in comp if c["sec"] == "B2B supplier & platform"]
+def split_top(s):
+    out, buf, depth = [], "", 0
+    for ch in s:
+        if ch == "(":
+            depth += 1
+        if ch == ")":
+            depth = max(0, depth - 1)
+        if ch in ",;" and depth == 0:
+            out.append(buf); buf = ""
+        else:
+            buf += ch
+    out.append(buf)
+    return [x.strip() for x in out if x.strip()]
 
-FINDINGS = [
-    {"t": "The incumbents are structurally unwilling to disrupt themselves",
-     "x": f"The {len(operators)} licensed operators average just {op_w}% on willingness — the lowest of any segment — "
-          f"while the {len(challengers)} prediction-market and AI-native entrants average {ch_w}%. Operators score high on "
-          f"distribution and low on appetite: they are what is being disrupted, not the disruptors.",
-     "e": ", ".join(f"{c['n']} W{c['w']}" for c in sorted(operators, key=lambda x: x["w"] or 0)[:4])},
-    {"t": "AI readiness is the sector's shared blind spot",
-     "x": f"Average AI readiness across all {len(comp)} companies is {ai_mean}% — the weakest of the three signal groups. "
-          f"Only {len(ai_over50)} of {len(comp)} clear 50%. iGaming talks about AI far more than it ships it; the agentic-commerce "
-          f"protocols (MCP/A2A/UCP/ACP) show zero adoption anywhere in the sample.",
-     "e": f"highest: {ai_top['n']} at {ai_top['ai']}%" + (f"; others ≥50: {', '.join(n for n in ai_over50 if n != ai_top['n'])}" if len(ai_over50) > 1 else "")},
-    {"t": "Only four companies hold the full stack — and half are challengers",
-     "x": f"A company needs all three pillars (Player, Product, Wallet) to run a betting relationship end to end without an "
-          f"incumbent. Just {len(full_stack)} of {len(comp)} do: {', '.join(c['n'] for c in full_stack)}. Two are incumbent-scale "
-          f"operators; two are recent entrants that assembled the same stack from outside the licensed model.",
-     "e": ", ".join(f"{c['n']} ({c['sec']})" for c in full_stack)},
-    {"t": f"{len(two_thirds)} companies sit one move from a complete bypass",
-     "x": f"They already hold two of the three pillars. For most the missing piece is the wallet or licensed supply — the exact "
-          f"gap an acquisition or a single partnership closes. This is where the sector's next structural shift comes from, not "
-          f"from the companies already at the top.",
-     "e": ", ".join(f"{c['n']} (missing {', '.join(k for k, v in c['pill'].items() if not v)})" for c in two_thirds[:5])},
-    {"t": "B2B suppliers own the content but deliberately never touch the player",
-     "x": f"The {len(b2b)} suppliers score well on product access and platform rails yet near-zero on owned audience — they arm "
-          f"the operators rather than competing with them. That makes them the sector's quiet chokepoint: whoever they choose to "
-          f"serve, or stop serving, moves the market without ever facing a player.",
-     "e": ", ".join(f"{c['n']} (W{c['w']} / D{c['d']})" for c in b2b[:4])},
-]
+
+JUNK = re.compile(r"\d+\+|customers|various|multiple|et al|others", re.I)
+nmap = {norm_name(c["n"]): c["n"] for c in comp}
+edges, externals = [], {}
+seen_edges = set()
+for c in companies:
+    src = c["company"]
+    for field in ("existing_partnerships", "gen_ai_platform_partnerships"):
+        raw = str(c.get(field) or "")
+        if not raw or raw.lower() in ("none", "null", "n/a"):
+            continue
+        for p in split_top(raw):
+            note = ""
+            m = re.match(r"^(.*?)\s*\((.*)\)\s*$", p)
+            if m:
+                p, note = m.group(1).strip(), m.group(2)
+            p = p.split(" — ")[0].split(" - ")[0].strip()
+            if len(p) < 3 or len(p) > 30 or JUNK.search(p):
+                continue
+            np_ = norm_name(p)
+            hit = None
+            for k, v in nmap.items():
+                if v == src:
+                    continue
+                if np_ and (np_ == k or (len(np_) >= 5 and (np_ in k or k in np_))):
+                    hit = v
+                    break
+            if hit:
+                key = tuple(sorted((src, hit)))
+                if key not in seen_edges:
+                    seen_edges.add(key)
+                    edges.append({"s": src, "t": hit, "ext": 0, "note": note[:80]})
+            else:
+                ext = externals.setdefault(p, {"n": p, "deg": 0})
+                ext["deg"] += 1
+                key = (src, p)
+                if key not in seen_edges:
+                    seen_edges.add(key)
+                    edges.append({"s": src, "t": p, "ext": 1, "note": note[:80]})
+
+ext_nodes = sorted(externals.values(), key=lambda e: -e["deg"])
+print(f"graph: {len(comp)} companies, {len(ext_nodes)} externals, {len(edges)} edges "
+      f"({sum(1 for e in edges if not e['ext'])} company-to-company)")
 
 payload = {
-    "meta": {"count": len(comp), "date": meta.get("extracted_on"),
-             "sha": (meta.get("sha256") or "")[:12], "built": date.today().isoformat()},
+    "meta": {"count": len(comp), "date": meta.get("extracted_on"), "built": date.today().isoformat()},
     "author": AUTHOR, "linkedin": LINKEDIN_URL, "github": GITHUB_URL,
-    "companies": comp, "sectors": SECTORS, "stages": STAGES, "verticals": VERTICALS,
+    "companies": comp, "externals": ext_nodes, "edges": edges,
+    "sectors": SECTORS, "seccol": SECCOL, "stages": STAGES,
     "labels": {"w": W_LABELS, "d": D_LABELS, "ai": AI_LABELS},
     "defs": {"w": W_DEFS, "d": D_DEFS, "ai": AI_DEFS},
-    "ama": AMA, "findings": FINDINGS,
-    "frame": {
-        "title": IG["title"],
-        "incumbent": IG["incumbent"],
-        "pillars": IG["pillars"],
-    },
+    "ama": AMA,
+    "frame": {"title": IG["title"], "incumbent": IG["incumbent"], "pillars": IG["pillars"]},
 }
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iGaming · AI Disruption Landscape</title>
+<title>iGaming · AI Disruption Constellation</title>
 <style>
-:root{
-  color-scheme:dark;   /* deliberately a single (dark) look — keeps form controls + scrollbars dark */
-  /* dataviz: dark surface + validated ink (references/palette.md) */
-  --surface:#1a1a19; --plane:#0d0d0d; --panel:#212120; --panel2:#2a2a28;
-  --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
-  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
-  /* validated categorical slots 1-3 (dark, --pairs all) */
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
-  /* status (fixed, never themed) */
-  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
-  --ease:cubic-bezier(.22,.61,.36,1); --t1:.15s; --t2:.28s; --t3:.42s;
-}
+:root{color-scheme:dark;
+ --bg:#070b18;--panel:rgba(9,13,26,.9);--panel2:#141b33;--line:#232c48;
+ --tx:#dde3ee;--tx2:#8b94a7;--mut:#5f6a8e;--gold:#f0c84b;--ac:#6ea8fe;
+ --hi:#ff5b72;
+ --ease:cubic-bezier(.22,.61,.36,1);--t1:.15s;--t2:.28s;--t3:.42s}
 @keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 *{box-sizing:border-box;margin:0;padding:0}
-html{background:var(--plane)}   /* html must carry it too, or a short view shows white canvas */
-body{background:var(--plane);color:var(--ink);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
-a{color:var(--s1)}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
-header h1{font-size:16px;font-weight:600;letter-spacing:.2px}
-header h1 small{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px}
-nav{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap}
-nav button{background:none;border:1px solid transparent;color:var(--ink2);padding:7px 14px;border-radius:8px;cursor:pointer;font:inherit;font-size:13px;transition:background var(--t1) var(--ease),color var(--t1) var(--ease),border-color var(--t1) var(--ease)}
-nav button:hover{background:var(--panel2);color:var(--ink)}
-nav button.on{background:var(--panel2);color:var(--ink);border-color:var(--border)}
-main{max-width:1280px;margin:0 auto;padding:22px}
-.view{display:none}.view.on{display:block;animation:viewIn var(--t2) var(--ease)}
-h2.vt{font-size:19px;margin-bottom:4px}
-p.vs{color:var(--ink2);font-size:13.5px;margin-bottom:18px;max-width:76ch}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
-.filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-.filters label{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
-select,input[type=search]{background:var(--panel);border:1px solid var(--border);color:var(--ink);padding:7px 11px;border-radius:9px;font:inherit;font-size:13px;outline:none}
-select:focus,input:focus{border-color:var(--s1)}
-.chip{padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--panel);color:var(--ink2);cursor:pointer;font-size:12px;transition:background var(--t1) var(--ease),color var(--t1) var(--ease),border-color var(--t1) var(--ease)}
-.chip:hover{color:var(--ink)}
-.chip.on{background:#23394f;border-color:var(--s1);color:#fff}
-/* ---------- stat tiles ---------- */
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
-.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
-.tile .v{font-size:26px;font-weight:600;line-height:1.1}
-.tile .k{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
-.tile .sub{font-size:12px;color:var(--ink2);margin-top:5px}
-/* ---------- positioning map ---------- */
-#mapWrap{position:relative}
-#map{width:100%;height:auto;display:block}
-.qlabel{fill:var(--muted);font-size:11px;letter-spacing:.4px}
-.qname{fill:#5d5c57;font-size:12.5px;font-weight:600}
-.axl{fill:var(--ink2);font-size:12px}
-.tick{fill:var(--muted);font-size:10.5px}
-.bub{cursor:pointer;transition:opacity var(--t2) var(--ease)}
-.bub circle{stroke:var(--surface);stroke-width:2}
-.bub .hit{fill:transparent;stroke:none}
-.bub text{fill:var(--ink2);font-size:11px;pointer-events:none}
-.bub.dim{opacity:.18}
-.bub:hover circle.mark{stroke:#fff}
-#tip{position:absolute;pointer-events:none;background:#111110;border:1px solid var(--axis);border-radius:9px;padding:9px 12px;font-size:12.5px;display:none;z-index:8;max-width:290px;box-shadow:0 10px 30px #000a}
-#tip b{color:#fff;display:block;margin-bottom:3px}
-#tip .m{color:var(--muted);font-size:11.5px}
-.legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink2);margin-top:12px}
-.legend .sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-/* ---------- signal matrix ---------- */
-.mxscroll{overflow-x:auto}
-table.mx{border-collapse:separate;border-spacing:2px;font-size:12px}
-table.mx th{font-weight:500;color:var(--muted);font-size:10.5px;text-align:left;padding:3px 5px;white-space:nowrap}
-table.mx th.rot{height:118px;width:26px;padding:0}
-table.mx th.rot span{display:block;transform:rotate(180deg);writing-mode:vertical-rl;font-size:10.5px;max-height:112px;overflow:hidden}
-table.mx th.co{position:sticky;left:0;background:var(--plane);z-index:2;color:var(--ink2);font-size:12px;min-width:190px;cursor:pointer}
-table.mx th.co:hover{color:var(--ink)}
-table.mx td{width:26px;height:26px;border-radius:4px;text-align:center;color:#0b0b0b;font-size:11px;font-weight:600;cursor:pointer;transition:transform var(--t1) var(--ease)}
-table.mx td:hover{transform:scale(1.18)}
-table.mx td.null{background:var(--panel2);color:var(--muted)}
-table.mx td.gapl{box-shadow:-3px 0 0 var(--plane)}
-.mxkey{display:flex;gap:4px;align-items:center;font-size:11.5px;color:var(--ink2);margin-top:12px}
-.mxkey i{width:24px;height:12px;border-radius:3px;display:inline-block}
-/* ---------- pillars ---------- */
-.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.pcol h3{font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.pcol h3 .dot{width:11px;height:11px;border-radius:50%}
-.prow{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:9px;background:var(--panel);border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:background var(--t1) var(--ease)}
-.prow:hover{background:var(--panel2)}
-.prow .nm{flex:1;font-size:12.5px}
-.prow .ep{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.pillbadge{display:inline-flex;gap:3px}
-.pillbadge i{width:8px;height:8px;border-radius:2px;display:inline-block}
-/* ---------- table ---------- */
+html{background:#04060e}
+body{background:#04060e;color:var(--tx);font:14px/1.5 "Segoe UI",system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+header{display:flex;align-items:center;gap:18px;padding:10px 18px;border-bottom:1px solid var(--line);background:rgba(9,13,26,.95);z-index:20}
+header h1{font-size:15.5px;font-weight:600}
+header .stamp{color:var(--mut);font-size:11.5px;margin-left:auto}
+nav{display:flex;gap:4px}
+nav button{background:none;border:1px solid transparent;color:var(--tx2);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;transition:background var(--t1) var(--ease),color var(--t1) var(--ease),border-color var(--t1) var(--ease)}
+nav button:hover{color:var(--tx);background:#141b33}
+nav button.on{background:#1a2342;color:#fff;border-color:#33406e}
+main{flex:1;overflow:hidden;display:flex}
+.view{flex:1;overflow:auto;padding:18px;display:none}
+.view.on{display:block;animation:viewIn var(--t2) var(--ease)}
+#vSky.on{display:flex;padding:0;animation:none}
+/* ================= SKY ================= */
+#skywrap{flex:1;position:relative;background:radial-gradient(ellipse at 55% 42%, #0d1430 0%, #070b18 55%, #04060e 100%)}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+#ctl{position:absolute;top:12px;left:12px;background:var(--panel);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;padding:12px;z-index:5;width:250px;max-height:calc(100% - 24px);overflow:auto}
+#ctl h5{font-size:10px;letter-spacing:1.4px;color:#6f7ba0;margin:11px 0 5px;text-transform:uppercase}
+#ctl h5:first-child{margin-top:0}
+#nq{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--tx);padding:6px 10px;border-radius:8px;font-size:13px;outline:none}
+#nq:focus{border-color:var(--ac)}
+.lgrow{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#9aa4c4;padding:3.5px 5px;border-radius:6px;cursor:pointer;transition:background var(--t1) var(--ease)}
+.lgrow:hover{background:#141b33}
+.lgrow.off{opacity:.35}
+.lgrow .st{width:11px;height:11px;border-radius:50%;flex:none;box-shadow:0 0 7px currentColor}
+.lgrow .cnt{margin-left:auto;color:var(--mut);font-size:11px}
+.fbtn{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;color:#aab4d4;padding:5px 8px;cursor:pointer;font-size:12.5px;transition:background var(--t1) var(--ease)}
+.fbtn:hover{background:#141b33}
+.hint{font-size:11px;color:var(--mut);line-height:1.6;padding:2px 5px}
+#tip{position:absolute;pointer-events:none;background:rgba(5,8,18,.94);border:1px solid #2b3454;padding:6px 10px;border-radius:8px;font-size:12px;display:none;z-index:6;max-width:270px}
+#tip b{color:#fff}#tip .m{color:var(--tx2);font-size:11px}
+#foot{position:absolute;bottom:10px;left:14px;color:var(--mut);font-size:11px;z-index:5}
+#focusbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid #33406e;border-radius:20px;padding:5px 14px;z-index:6;font-size:12.5px;display:none;align-items:center;gap:10px}
+#focusbar b{color:var(--gold)}
+#focusbar button{background:none;border:none;color:var(--tx2);cursor:pointer;font-size:14px}
+#zoomctl{position:absolute;right:14px;bottom:12px;z-index:6;display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#zoomctl button{background:none;border:none;color:#c3cce0;width:30px;height:28px;cursor:pointer;font-size:16px}
+#zoomctl button+button{border-top:1px solid var(--line)}
+#zoomctl button:hover{background:#1a2342;color:#fff}
+/* ================= BOARD ================= */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.tile .v{font-size:25px;font-weight:600}
+.tile .k{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;margin-top:3px}
+.tile .sub{font-size:11.5px;color:var(--tx2);margin-top:4px}
 table.dt{width:100%;border-collapse:collapse;font-size:13px}
-table.dt th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;padding:9px 8px;border-bottom:1px solid var(--axis);cursor:pointer;white-space:nowrap}
-table.dt th:hover{color:var(--ink)}
-table.dt td{padding:9px 8px;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums}
+table.dt th{position:sticky;top:0;text-align:left;background:#0b101f;color:var(--tx2);font-weight:500;padding:8px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+table.dt td{padding:8px;border-bottom:1px solid #131a2c;white-space:nowrap;font-variant-numeric:tabular-nums}
 table.dt tbody tr{cursor:pointer}
-table.dt tbody tr:hover{background:var(--panel)}
-.pill{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
-.pHigh{background:#3a1a1a;color:#ff9d9d}.pMedium{background:#3a2f18;color:#ffcf7a}.pLow{background:#1b2c3f;color:#8fc0f0}
-/* ---------- drawer ---------- */
-#scrim{position:fixed;inset:0;background:#000a;backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity var(--t2) var(--ease),visibility 0s linear var(--t2);z-index:30}
+table.dt tbody tr:hover{background:#131a2e}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font-size:11px;font-weight:600}
+.pHigh{background:#3a1820;color:#ff8e9d}.pMedium{background:#39301a;color:#ffd479}.pLow{background:#16263c;color:#7fb4f5}
+.confbadge{display:inline-block;padding:1px 8px;border-radius:11px;font-size:10.5px;font-weight:600}
+.chigh{background:#15301f;color:#5fd99a}.cmedium{background:#39301a;color:#ffd479}.clow{background:#3a1820;color:#ff8e9d}
+/* ================= FINDINGS ================= */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
+.fcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+.fcard h3{font-size:14px;margin-bottom:6px}
+.fcard p{color:var(--tx2);font-size:12.5px}
+.fcard .ev{margin-top:8px;font-size:11px;color:var(--mut);border-top:1px solid #1a2235;padding-top:7px}
+.prose{max-width:78ch;color:var(--tx2);font-size:13px}
+.prose h3{color:var(--tx);font-size:14.5px;margin:18px 0 6px}
+.prose p{margin-bottom:9px}
+.prose ul{margin:0 0 9px 20px}
+.prose code{background:var(--panel2);padding:1px 6px;border-radius:5px;font-size:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-top:12px}
+footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);color:var(--mut);font-size:12px;display:flex;gap:16px;flex-wrap:wrap}
+footer a{color:var(--ac)}
+h2.vt{font-size:18px;margin-bottom:4px}
+p.vs{color:var(--tx2);font-size:13px;margin-bottom:14px;max-width:80ch}
+/* ================= DRAWER ================= */
+#scrim{position:fixed;inset:0;background:#0009;opacity:0;visibility:hidden;transition:opacity var(--t2) var(--ease),visibility 0s linear var(--t2);z-index:30}
 #scrim.on{opacity:1;visibility:visible;transition:opacity var(--t2) var(--ease)}
-#drawer{position:fixed;top:0;right:0;width:min(640px,100%);height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:31;display:flex;flex-direction:column;transform:translateX(102%);transition:transform var(--t3) var(--ease);box-shadow:-16px 0 50px #000b}
+#drawer{position:fixed;top:0;right:0;width:min(620px,100%);height:100vh;background:#0b101f;border-left:1px solid var(--line);z-index:31;display:flex;flex-direction:column;transform:translateX(103%);transition:transform var(--t3) var(--ease);box-shadow:-14px 0 44px #000b}
 #drawer.on{transform:none}
-.dh{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
-.dh h2{font-size:17px}.dh .sub{color:var(--muted);font-size:12px;margin-top:3px}
-.x{margin-left:auto;background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
-.x:hover{color:var(--ink)}
-.db{padding:16px 20px;overflow:auto}
-.db h4{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin:18px 0 7px}
+.dh{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:12px}
+.dh h2{font-size:17px}.dh .sub{color:var(--mut);font-size:12px;margin-top:3px}
+.x{margin-left:auto;background:none;border:none;color:var(--mut);font-size:22px;cursor:pointer;line-height:1}
+.x:hover{color:var(--tx)}
+.db{padding:15px 20px;overflow:auto}
+.db h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);margin:16px 0 6px}
 .kv{display:flex;flex-wrap:wrap;gap:6px}
-.kv span{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:3px 9px;font-size:12px;color:var(--ink2)}
-.kv b{color:var(--ink)}
-.gauges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0}
+.kv span{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:12px;color:var(--tx2)}
+.kv b{color:var(--tx)}
+.gauges{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 2px}
 .g{text-align:center}
-.g .ring{width:66px;height:66px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center}
-.g .ring i{width:52px;height:52px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:600;font-size:15px}
-.g .gl{font-size:10.5px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.5px}
-.sgrp{font-size:10.5px;letter-spacing:.7px;color:var(--muted);text-transform:uppercase;margin:14px 0 5px}
-.sr{margin:3px 0;border-radius:7px;overflow:hidden}
+.g .ring{width:64px;height:64px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.g .ring i{width:50px;height:50px;border-radius:50%;background:#0b101f;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:600;font-size:15px}
+.g .gl{font-size:10px;color:var(--mut);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.sgrp{font-size:10px;letter-spacing:1px;color:#6f7ba0;text-transform:uppercase;margin:13px 0 4px}
+.sr{margin:2.5px 0}
 .sr .top{display:flex;align-items:center;gap:9px;padding:4px 6px;cursor:pointer;border-radius:7px;transition:background var(--t1) var(--ease)}
-.sr .top:hover{background:var(--panel)}
-.sr .lb{flex:1;font-size:12px;color:var(--ink2)}
-.sr .bar{width:96px;height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;flex:none}
-.sr .bar i{display:block;height:100%;border-radius:4px}
-.sr .vl{width:16px;text-align:right;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-.sr .why{display:none;padding:7px 10px 9px 12px;font-size:12px;color:var(--ink2);border-left:2px solid var(--s1);margin:2px 0 6px 6px;background:#1e1e1c;border-radius:0 7px 7px 0}
+.sr .top:hover{background:#141b33}
+.sr .lb{flex:1;font-size:12px;color:var(--tx2)}
+.sr .bar{width:92px;height:6px;background:#1a2235;border-radius:3px;overflow:hidden;flex:none}
+.sr .bar i{display:block;height:100%;border-radius:3px}
+.sr .vl{width:14px;text-align:right;font-size:11px;color:var(--mut);font-variant-numeric:tabular-nums}
+.sr .why{display:none;padding:7px 10px;font-size:12px;color:#b9c2d8;border-left:2px solid var(--ac);margin:2px 0 6px 6px;background:#101728;border-radius:0 7px 7px 0}
 .sr.open .why{display:block}
-.sr .why .def{color:var(--muted);font-size:11.5px;margin-top:5px}
-.jstrip{display:flex;gap:4px;margin:6px 0}
-.jseg{flex:1;text-align:center;font-size:9.5px;padding:6px 2px;border-radius:7px;background:var(--panel);color:#5d5c57;border:1px solid var(--border)}
-.jseg.on{background:#16324d;color:#9cc7f5;border-color:#27496b}
-.callout{border-left:3px solid var(--s1);background:var(--panel);border-radius:0 9px 9px 0;padding:10px 13px;margin:7px 0;font-size:12.5px;color:var(--ink2);white-space:pre-wrap}
-.callout.imp{border-color:var(--crit)}.callout.gap{border-color:var(--warn)}
+.sr .why .def{color:var(--mut);font-size:11px;margin-top:5px}
+.jstrip{display:flex;gap:3px;margin:6px 0}
+.jseg{flex:1;text-align:center;font-size:9.5px;padding:5px 2px;border-radius:6px;background:#141b33;color:#4a5470;border:1px solid #1d2742}
+.jseg.on{background:#152a3d;color:#7fb4f5;border-color:#27496b}
+.callout{border-left:3px solid var(--ac);background:#111a2e;border-radius:0 8px 8px 0;padding:9px 12px;margin:7px 0;font-size:12.5px;color:#b9c2d8;white-space:pre-wrap}
+.callout.imp{border-color:var(--hi)}.callout.gap{border-color:#e7a93c}
 .srcs{list-style:none}
-.srcs li{margin:5px 0;font-size:12px;word-break:break-all}
-.confbadge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:600}
-.chigh{background:#0f2e0f;color:#7fdc7f}.cmedium{background:#3a2f18;color:#ffcf7a}.clow{background:#3a1a1a;color:#ff9d9d}
-/* ---------- method / findings ---------- */
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px}
-.fcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
-.fcard h3{font-size:14.5px;margin-bottom:7px}
-.fcard p{color:var(--ink2);font-size:13px}
-.fcard .ev{margin-top:9px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--grid);padding-top:8px}
-.prose{max-width:78ch;color:var(--ink2);font-size:13.5px}
-.prose h3{color:var(--ink);font-size:15px;margin:20px 0 7px}
-.prose p{margin-bottom:10px}
-.prose ul{margin:0 0 10px 20px}
-.prose li{margin-bottom:5px}
-.prose code{background:var(--panel2);padding:1px 6px;border-radius:5px;font-size:12.5px}
-footer{border-top:1px solid var(--border);margin-top:34px;padding:20px 0;color:var(--muted);font-size:12px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.srcs li{margin:4px 0;font-size:11.5px;word-break:break-all}
+.srcs a{color:var(--ac)}
+.connrow{display:flex;align-items:center;gap:7px;padding:4px 6px;border-radius:7px;cursor:pointer;font-size:12px;transition:background var(--t1) var(--ease)}
+.connrow:hover{background:#141b33}
+.connrow .cdot{width:8px;height:8px;border-radius:50%;flex:none}
+.connrow .cty{margin-left:auto;font-size:10px;color:var(--mut);max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style></head><body>
 
-<header>
-  <h1>iGaming · AI Disruption Landscape<small id="hsub"></small></h1>
-  <nav>
-    <button data-v="vMap" class="on">Positioning</button>
-    <button data-v="vMx">Signal matrix</button>
-    <button data-v="vPill">The stack</button>
-    <button data-v="vTab">Data</button>
-    <button data-v="vFind">Findings &amp; method</button>
-  </nav>
-</header>
+<header><h1>iGaming · AI Disruption Constellation</h1>
+<nav><button data-v="vSky" class="on">Constellation</button><button data-v="vBoard">Threat Board</button><button data-v="vFind">Findings &amp; Method</button></nav>
+<span class="stamp" id="stamp"></span></header>
 
 <main>
-  <!-- ============ POSITIONING ============ -->
-  <div id="vMap" class="view on">
-    <h2 class="vt">Who can actually take the player?</h2>
-    <p class="vs">Every company scored on <b>willingness</b> to attack the incumbent model (horizontal) and <b>readiness</b> to execute (vertical). Bubble size is company scale. The incumbent benchmark marks where the licensed-operator model sits today. Click any company for its full evidence.</p>
-    <div class="tiles" id="tiles"></div>
-    <div class="card">
-      <div class="filters">
-        <label>Segment</label><select id="fSec"></select>
-        <label>Tier</label><select id="fTier"></select>
-        <input type="search" id="fQ" placeholder="Find a company…" style="margin-left:auto;min-width:190px">
-      </div>
-      <div id="mapWrap"><svg id="map" viewBox="0 0 900 640" role="img" aria-label="Positioning map of companies by willingness and readiness"></svg><div id="tip"></div></div>
-      <div class="legend" id="mapLegend"></div>
-    </div>
+<div id="vSky" class="view on"><div id="skywrap">
+  <canvas id="cv"></canvas><div id="tip"></div>
+  <div id="focusbar"><span>Focused on <b id="focusname"></b></span><button onclick="clearFocus()">✕</button></div>
+  <div id="ctl">
+    <h5>Find</h5><input id="nq" placeholder="Type a company…" autocomplete="off">
+    <h5>Constellations — click to spotlight</h5><div id="leg"></div>
+    <h5>View</h5>
+    <button class="fbtn" id="extBtn"><span class="st" style="width:10px;height:10px;border-radius:50%;background:#7d88aa"></span>Partner entities: shown</button>
+    <button class="fbtn" id="linesBtn"><span style="width:14px;height:2px;background:#3d4a73;border-radius:2px"></span>Constellation lines: on</button>
+    <h5>Reading the sky</h5>
+    <div class="hint">★ size = company scale (market cap / valuation / funding)<br>
+    red ring = High threat tier<br>
+    small grey stars = named partners from the research<br>
+    click a star → its dossier · drag to pan · wheel to zoom</div>
   </div>
+  <div id="zoomctl"><button id="zIn">+</button><button id="zFit">⤢</button><button id="zOut">−</button></div>
+  <div id="foot"></div>
+</div></div>
 
-  <!-- ============ SIGNAL MATRIX ============ -->
-  <div id="vMx" class="view">
-    <h2 class="vt">Where the capability actually sits</h2>
-    <p class="vs">All 18 scored signals for every company, 0–5. Click any cell to see why that score was given. Reading down a column shows the sector's structural strengths and gaps — the AI block is the tell.</p>
-    <div class="card">
-      <div class="filters"><label>Sort</label><select id="mxSort">
-        <option value="epi">Disruption score</option><option value="w">Willingness</option>
-        <option value="d">Readiness</option><option value="ai">AI readiness</option><option value="n">Company A–Z</option>
-      </select><span class="chip" id="mxSecToggle" style="margin-left:auto">Group by segment: off</span></div>
-      <div class="mxscroll"><table class="mx" id="mx"></table></div>
-      <div class="mxkey"><span>0</span><i style="background:#184f95"></i><i style="background:#256abf"></i><i style="background:#3987e5"></i><i style="background:#6da7ec"></i><i style="background:#9ec5f4"></i><i style="background:#cde2fb"></i><span>5</span><span style="margin-left:10px;color:var(--muted)">grey = not disclosed</span></div>
-    </div>
-  </div>
+<div id="vBoard" class="view">
+  <h2 class="vt">Threat board</h2>
+  <p class="vs">Every company ranked by disruption score — 0.4 × willingness to attack the incumbent model + 0.6 × readiness to execute. Click a row for the full dossier.</p>
+  <div class="tiles" id="tiles"></div>
+  <table class="dt" id="dt"></table>
+</div>
 
-  <!-- ============ PILLARS ============ -->
-  <div id="vPill" class="view">
-    <h2 class="vt">The three pillars of a bypass</h2>
-    <p class="vs" id="pillIntro"></p>
-    <div class="tiles" id="pillTiles"></div>
-    <div class="card"><div class="pgrid" id="pillGrid"></div></div>
-  </div>
-
-  <!-- ============ DATA ============ -->
-  <div id="vTab" class="view">
-    <h2 class="vt">Every company, every number</h2>
-    <p class="vs">The full scored dataset. Click a row for the company's evidence and sources.</p>
-    <div class="card"><table class="dt" id="dt"></table></div>
-  </div>
-
-  <!-- ============ FINDINGS & METHOD ============ -->
-  <div id="vFind" class="view">
-    <h2 class="vt">What the data says</h2>
-    <p class="vs">Findings computed from the scored dataset — each one traceable to the companies that produce it.</p>
-    <div class="fgrid" id="findings"></div>
-    <h2 class="vt" style="margin-top:30px">Method</h2>
-    <div class="card"><div class="prose" id="method"></div></div>
-    <footer id="foot"></footer>
-  </div>
+<div id="vFind" class="view">
+  <h2 class="vt">What the sky is telling us</h2>
+  <p class="vs">Findings computed from the scored dataset — each traceable to the companies that produce it.</p>
+  <div class="fgrid" id="findings"></div>
+  <div class="card"><div class="prose" id="method"></div><footer id="foot2"></footer></div>
+</div>
 </main>
 
 <div id="scrim" onclick="closeDrawer()"></div>
-<aside id="drawer" aria-label="Company detail"><div class="dh"><div style="flex:1"><h2 id="dt_"></h2><div class="sub" id="ds_"></div></div><button class="x" onclick="closeDrawer()" aria-label="Close">×</button></div><div class="db" id="db_"></div></aside>
+<aside id="drawer"><div class="dh"><div style="flex:1"><h2 id="dt_"></h2><div class="sub" id="ds_"></div></div><button class="x" onclick="closeDrawer()">×</button></div><div class="db" id="db_"></div></aside>
 
 <script>
 const D=__DATA__;
 const C=D.companies, byName={}; C.forEach(c=>byName[c.n]=c);
-const RAMP=['#184f95','#256abf','#3987e5','#6da7ec','#9ec5f4','#cde2fb'];
-const S1='#3987e5',S2='#d95926',S3='#199e70';
+const SECCOL=D.seccol, EXTCOL="#7d88aa";
+const RAMP=['#26436e','#2d5a99','#3987e5','#6da7ec','#9ec5f4','#cde2fb'];
 const esc=s=>String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
-const nn=v=>v===null||v===undefined?'–':v;
-document.getElementById('hsub').textContent=D.meta.count+' companies · scored '+D.meta.date+' · every number sourced';
+const nn=v=>v==null?'–':v;
+document.getElementById('stamp').textContent=D.meta.count+' companies · '+D.externals.length+' partner entities · every number sourced';
 
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
-  b.classList.add('on'); document.getElementById(b.dataset.v).classList.add('on');
+ document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+ document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+ b.classList.add('on');document.getElementById(b.dataset.v).classList.add('on');
 });
 
+/* ================= CONSTELLATION ================= */
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+const REDUCE=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+let nodes=[],links=[],byId={},secAnchor={},focusId=null,hoverN=null,secSpot=null;
+let zoom=1,cx=0,cy=0,alpha=1,dragN=null,panning=false,px=0,py=0,downX=0,downY=0;
+let showExt=true,showLines=true,T=0;
+const bgStars=[];for(let i=0;i<240;i++)bgStars.push([Math.random(),Math.random(),Math.random()*1.1+0.2,Math.random()*6.28]);
+
+function initSky(){
+ // sector anchors on a ring — each constellation gets its own region of sky
+ const secs=D.sectors.filter(s=>C.some(c=>c.sec===s));
+ secs.forEach((s,i)=>{const a=(i/secs.length)*6.283-1.2;
+  secAnchor[s]={x:Math.cos(a)*330,y:Math.sin(a)*250};});
+ nodes=C.map(c=>{const an=secAnchor[c.sec]||{x:0,y:0};
+  return {id:c.n,ds:1,sec:c.sec,tier:c.tier,sz:c.sz,
+   x:an.x+(Math.random()-.5)*220,y:an.y+(Math.random()-.5)*180,
+   vx:0,vy:0,ph:Math.random()*6.28,deg:0};});
+ D.externals.forEach(e=>{nodes.push({id:e.n,ds:0,sz:1.6+Math.sqrt(e.deg)*0.9,
+  x:(Math.random()-.5)*900,y:(Math.random()-.5)*640,vx:0,vy:0,ph:Math.random()*6.28,deg:0});});
+ nodes.forEach(n=>byId[n.id]=n);
+ links=D.edges.filter(e=>byId[e.s]&&byId[e.t]).map(e=>({a:byId[e.s],b:byId[e.t],ext:e.ext,note:e.note||''}));
+ links.forEach(l=>{l.a.deg++;l.b.deg++;});
+ // externals start near their partner
+ links.forEach(l=>{if(l.ext&&l.b.ds===0){l.b.x=l.a.x+(Math.random()-.5)*120;l.b.y=l.a.y+(Math.random()-.5)*120;}});
+ // legend
+ const cnt={};C.forEach(c=>cnt[c.sec]=(cnt[c.sec]||0)+1);
+ document.getElementById('leg').innerHTML=secs.map(s=>
+  '<div class="lgrow" data-s="'+esc(s)+'"><span class="st" style="background:'+SECCOL[s]+';color:'+SECCOL[s]+'"></span>'+esc(s)+'<span class="cnt">'+cnt[s]+'</span></div>').join('');
+ document.querySelectorAll('#leg .lgrow').forEach(r=>r.onclick=()=>{
+  secSpot=(secSpot===r.dataset.s)?null:r.dataset.s;
+  document.querySelectorAll('#leg .lgrow').forEach(x=>x.classList.toggle('off',secSpot&&x.dataset.s!==secSpot));
+  alpha=Math.max(alpha,.3);});
+ document.getElementById('foot').textContent=C.length+' companies · '+D.externals.length+' partner entities · '+links.length+' links';
+ sizeCv();loop();
+ addEventListener('resize',sizeCv);
+}
+function sizeCv(){const r=cv.parentElement.getBoundingClientRect();
+ if(r.width<2)return; // layout not ready yet — the loop guard will retry
+ cv.width=r.width*devicePixelRatio;cv.height=r.height*devicePixelRatio;}
+function neighbors(id){const s=new Set([id]);links.forEach(l=>{if(l.a.id===id)s.add(l.b.id);if(l.b.id===id)s.add(l.a.id);});return s;}
+let focusSet=null;
+function setFocus(id){focusId=id;focusSet=neighbors(id);
+ document.getElementById('focusname').textContent=id;
+ document.getElementById('focusbar').style.display='flex';
+ alpha=Math.max(alpha,.25);
+ if(byName[id])openCompany(id);else openExternal(id);}
+function clearFocus(){focusId=null;focusSet=null;document.getElementById('focusbar').style.display='none';}
+
+function step(){
+ // pairwise repulsion (n≈100 → fine)
+ for(let i=0;i<nodes.length;i++){const a=nodes[i];
+  for(let j=i+1;j<nodes.length;j++){const b=nodes[j];
+   let dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy+40;
+   if(d2>90000)continue;
+   const f=(a.ds&&b.ds?820:300)/d2,d=Math.sqrt(d2);dx/=d;dy/=d;
+   a.vx+=dx*f;a.vy+=dy*f;b.vx-=dx*f;b.vy-=dy*f;}}
+ // springs on edges
+ links.forEach(l=>{
+  const rest=l.ext?70:150,k=l.ext?0.012:0.008;
+  let dx=l.b.x-l.a.x,dy=l.b.y-l.a.y;const d=Math.sqrt(dx*dx+dy*dy)+.01,f=(d-rest)*k;
+  dx/=d;dy/=d;l.a.vx+=dx*f;l.a.vy+=dy*f;l.b.vx-=dx*f;l.b.vy-=dy*f;});
+ nodes.forEach(n=>{
+  if(n.ds){const an=secAnchor[n.sec];if(an){n.vx+=(an.x-n.x)*0.0016;n.vy+=(an.y-n.y)*0.0016;}}
+  n.vx-=n.x*0.0004;n.vy-=n.y*0.0004;
+  if(!REDUCE){n.vx+=Math.sin(T*0.22+n.ph)*0.2;n.vy+=Math.cos(T*0.18+n.ph*1.3)*0.2;}
+  n.vx=Math.max(-22,Math.min(22,n.vx))*alpha;n.vy=Math.max(-22,Math.min(22,n.vy))*alpha;
+  if(n!==dragN){n.x+=n.vx;n.y+=n.vy;n.vx*=0.85;n.vy*=0.85;}});
+ alpha=Math.max(REDUCE?0:0.05,alpha*0.992);
+}
+function mstSector(sec){
+ const pts=nodes.filter(n=>n.ds&&n.sec===sec);
+ if(pts.length<2)return[];
+ const inTree=[pts[0]],rest=pts.slice(1),segs=[];
+ while(rest.length){let bi=0,bj=0,bd=1e18;
+  for(let i=0;i<inTree.length;i++)for(let j=0;j<rest.length;j++){
+   const dx=inTree[i].x-rest[j].x,dy=inTree[i].y-rest[j].y,d=dx*dx+dy*dy;
+   if(d<bd){bd=d;bi=i;bj=j;}}
+  segs.push([inTree[bi],rest[bj]]);inTree.push(rest[bj]);rest.splice(bj,1);}
+ return segs;
+}
+function dimOf(n){
+ if(focusSet)return focusSet.has(n.id)?1:0.13;
+ if(secSpot)return (n.ds&&n.sec===secSpot)?1:(n.ds?0.15:0.1);
+ return 1;
+}
+function starR(n){return n.ds?(1.2+n.sz*0.9):(0.8+n.sz*0.8);}
+function draw(){
+ T+=0.016;
+ const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+ ctx.save();
+ bgStars.forEach(s=>{ctx.globalAlpha=0.10+0.10*Math.sin(T*0.7+s[3]);ctx.fillStyle='#9fb4ff';ctx.fillRect(s[0]*W,s[1]*H,s[2],s[2]);});
+ ctx.restore();
+ ctx.save();ctx.translate(W/2,H/2);ctx.scale(zoom*devicePixelRatio,zoom*devicePixelRatio);ctx.translate(-cx,-cy);
+ // asterisms — the constellation lines
+ if(showLines){ctx.lineWidth=0.8;
+  Object.keys(secAnchor).forEach(sec=>{
+   const col=SECCOL[sec]||'#666';
+   const spot=secSpot===sec;
+   ctx.strokeStyle=col;
+   mstSector(sec).forEach(([a,b])=>{
+    const dm=Math.min(dimOf(a),dimOf(b));
+    ctx.globalAlpha=(spot?0.5:0.22)*dm;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();});});}
+ // partnership edges
+ ctx.globalCompositeOperation='lighter';
+ links.forEach(l=>{
+  if(!showExt&&(l.a.ds===0||l.b.ds===0))return;
+  const dm=Math.min(dimOf(l.a),dimOf(l.b));
+  if(dm<0.2&&!focusSet)return;
+  ctx.strokeStyle=l.ext?'#4b5a86':'#7e9cff';
+  ctx.globalAlpha=(l.ext?0.30:0.55)*dm;
+  ctx.lineWidth=l.ext?0.7:1.3;
+  ctx.beginPath();ctx.moveTo(l.a.x,l.a.y);ctx.lineTo(l.b.x,l.b.y);ctx.stroke();
+  if(!l.ext){ctx.globalAlpha=0.14*dm;ctx.lineWidth=4;ctx.stroke();}});
+ ctx.globalCompositeOperation='source-over';
+ // stars
+ nodes.forEach(n=>{
+  if(!showExt&&!n.ds)return;
+  const dm=dimOf(n);if(dm<0.05)return;
+  const r=starR(n),col=n.ds?(SECCOL[n.sec]||'#9fb0cc'):EXTCOL;
+  const tw=(n.sz<4?(0.82+0.18*Math.sin(T*1.4+n.ph)):1)*dm;
+  ctx.globalAlpha=0.16*tw;ctx.fillStyle=col;
+  ctx.beginPath();ctx.arc(n.x,n.y,r*2.6,0,7);ctx.fill();
+  ctx.globalAlpha=tw;ctx.beginPath();ctx.arc(n.x,n.y,r,0,7);ctx.fill();
+  if(r>6){ctx.globalAlpha=0.5*tw;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(n.x,n.y,r*0.38,0,7);ctx.fill();}
+  if(n.ds&&n.tier==='High'){ctx.globalAlpha=0.85*dm;ctx.strokeStyle='#ff5b72';ctx.lineWidth=1.1;
+   ctx.beginPath();ctx.arc(n.x,n.y,r+2.4,0,7);ctx.stroke();}
+  if(n===hoverN||n.id===focusId){ctx.globalAlpha=1;ctx.strokeStyle='#fff';ctx.lineWidth=1.4;
+   ctx.beginPath();ctx.arc(n.x,n.y,r+3.6,0,7);ctx.stroke();}
+  // labels: EVERY company star is named — the luxury of n=25
+  const showLbl=n.ds||n===hoverN||n.id===focusId||(focusSet&&focusSet.has(n.id))||zoom>1.8;
+  if(showLbl){ctx.fillStyle=n.ds?'#c9d2ea':'#8a93ad';
+   ctx.font=(n.ds?'600 ':'')+(n.ds?'10.5px ':'9px ')+'"Segoe UI"';
+   ctx.globalAlpha=(n.ds?0.92:0.75)*dm;
+   ctx.fillText(n.id.length>26?n.id.slice(0,25)+'…':n.id,n.x+r+4,n.y+3.5);}
+  ctx.globalAlpha=1;});
+ ctx.restore();
+}
+function loop(){
+ // self-heal if layout wasn't ready at init (canvas 0x0) or the pane resized
+ const r=cv.parentElement.getBoundingClientRect();
+ if(Math.abs(cv.width-r.width*devicePixelRatio)>2)sizeCv();
+ step();draw();requestAnimationFrame(loop);}
+function pick(mx,my){const r=cv.getBoundingClientRect();
+ const x=(mx-r.left-r.width/2)/zoom+cx,y=(my-r.top-r.height/2)/zoom+cy;
+ let best=null,bd=1e9;
+ nodes.forEach(n=>{if(!showExt&&!n.ds)return;
+  const dx=n.x-x,dy=n.y-y,d2=dx*dx+dy*dy,rr=Math.pow(starR(n)+5,2);
+  if(d2<rr&&d2<bd){bd=d2;best=n;}});
+ return best;}
+cv.onmousedown=e=>{const n=pick(e.clientX,e.clientY);
+ if(n)dragN=n;else panning=true;
+ px=downX=e.clientX;py=downY=e.clientY;};
+addEventListener('mousemove',e=>{
+ if(dragN){dragN.x+=(e.clientX-px)/zoom;dragN.y+=(e.clientY-py)/zoom;px=e.clientX;py=e.clientY;alpha=Math.max(alpha,.18);}
+ else if(panning){cx-=(e.clientX-px)/zoom;cy-=(e.clientY-py)/zoom;px=e.clientX;py=e.clientY;}
+ else{const n=pick(e.clientX,e.clientY);hoverN=n;
+  const tip=document.getElementById('tip');
+  if(n){const wr=cv.parentElement.getBoundingClientRect();
+   tip.style.display='block';
+   tip.style.left=Math.min(wr.width-280,e.clientX-wr.left+14)+'px';
+   tip.style.top=(e.clientY-wr.top+10)+'px';
+   const c=byName[n.id];
+   tip.innerHTML='<b>'+esc(n.id)+'</b><div class="m">'+(c?esc(c.sec)+' · score '+nn(c.epi)+' · '+esc(c.quad):'partner entity · '+n.deg+' link'+(n.deg>1?'s':''))+'</div>';
+   cv.style.cursor='pointer';}
+  else{tip.style.display='none';cv.style.cursor='default';}}});
+addEventListener('mouseup',e=>{
+ const moved=Math.abs(e.clientX-downX)>4||Math.abs(e.clientY-downY)>4;
+ if(dragN&&!moved)setFocus(dragN.id);
+ else if(panning&&!moved&&e.target===cv){clearFocus();closeDrawer();}
+ dragN=null;panning=false;});
+cv.onwheel=e=>{e.preventDefault();zoom*=e.deltaY<0?1.12:0.89;zoom=Math.max(0.3,Math.min(5,zoom));};
+document.getElementById('zIn').onclick=()=>{zoom=Math.min(5,zoom*1.25);};
+document.getElementById('zOut').onclick=()=>{zoom=Math.max(0.3,zoom*0.8);};
+document.getElementById('zFit').onclick=()=>{zoom=1;cx=0;cy=0;};
+document.getElementById('extBtn').onclick=e=>{showExt=!showExt;
+ e.currentTarget.innerHTML='<span class="st" style="width:10px;height:10px;border-radius:50%;background:#7d88aa"></span>Partner entities: '+(showExt?'shown':'hidden');};
+document.getElementById('linesBtn').onclick=e=>{showLines=!showLines;
+ e.currentTarget.innerHTML='<span style="width:14px;height:2px;background:#3d4a73;border-radius:2px"></span>Constellation lines: '+(showLines?'on':'off');};
+document.getElementById('nq').onkeydown=e=>{
+ if(e.key!=='Enter')return;
+ const q=e.target.value.toLowerCase().trim();if(!q)return;
+ const n=nodes.find(n=>n.id.toLowerCase().includes(q));
+ if(n){cx=n.x;cy=n.y;zoom=Math.max(zoom,1.6);setFocus(n.id);}};
 /* ================= DRAWER ================= */
-function gauge(label,val,col){
-  const v=Math.max(0,Math.min(100,val||0));
-  return '<div class="g"><div class="ring" style="background:conic-gradient('+col+' '+(v*3.6)+'deg,#2a2a28 0)"><i>'+(val==null?'–':Math.round(v))+'</i></div><div class="gl">'+label+'</div></div>';
-}
-function sigRows(c,key,labels,prefix){
-  const defs=D.defs[key]||{};
-  return c.sig[key].map((v,i)=>{
-    const lab=labels[i], j=c.just[prefix+(i+1)], def=defs[lab];
-    const pct=v==null?0:(v/5*100), col=v==null?'#2a2a28':RAMP[Math.max(0,Math.min(5,v))];
-    return '<div class="sr" data-k="'+prefix+(i+1)+'"><div class="top"><span class="lb">'+esc(lab)+'</span>'+
-      '<span class="bar"><i style="width:'+pct+'%;background:'+col+'"></i></span><span class="vl">'+(v==null?'–':v)+'</span></div>'+
-      '<div class="why">'+(j?esc(j):'<span style="color:var(--muted)">No justification recorded.</span>')+
-      (def?'<div class="def"><b>Anchors:</b> '+esc(def[1])+'</div>':'')+'</div></div>';
-  }).join('');
-}
+function gauge(label,val,col){const v=Math.max(0,Math.min(100,val||0));
+ return '<div class="g"><div class="ring" style="background:conic-gradient('+col+' '+(v*3.6)+'deg,#1a2235 0)"><i>'+(val==null?'–':Math.round(v))+'</i></div><div class="gl">'+label+'</div></div>';}
+function sigRows(c,key,labels,prefix,col){
+ const defs=D.defs[key]||{};
+ return c.sig[key].map((v,i)=>{
+  const lab=labels[i],j=c.just[prefix+(i+1)],anch=defs[lab];
+  const pct=v==null?0:(v/5*100);
+  return '<div class="sr" data-k="'+prefix+(i+1)+'"><div class="top"><span class="lb">'+esc(lab)+'</span>'+
+   '<span class="bar"><i style="width:'+pct+'%;background:'+col+'"></i></span><span class="vl">'+(v==null?'–':v)+'</span></div>'+
+   '<div class="why">'+(j?esc(j):'<span style="color:var(--mut)">No justification recorded.</span>')+
+   (anch?'<div class="def"><b>Anchors:</b> '+esc(anch)+'</div>':'')+'</div></div>';}).join('');}
+function connRows(id){
+ const rows=links.filter(l=>l.a.id===id||l.b.id===id).map(l=>{
+  const other=l.a.id===id?l.b:l.a;
+  return {o:other.id,ds:other.ds,sec:other.ds?(byName[other.id]||{}).sec:null,note:l.note};});
+ if(!rows.length)return '';
+ return '<h4>Connections ('+rows.length+')</h4>'+rows.map(r=>
+  '<div class="connrow" onclick="jumpTo(\''+r.o.replace(/'/g,"\\'")+'\')">'+
+  '<span class="cdot" style="background:'+(r.ds?(SECCOL[r.sec]||'#9fb0cc'):EXTCOL)+'"></span>'+esc(r.o)+
+  (r.note?'<span class="cty">'+esc(r.note)+'</span>':'')+'</div>').join('');}
+function jumpTo(id){const n=byId[id];if(!n)return;cx=n.x;cy=n.y;zoom=Math.max(zoom,1.5);
+ document.querySelector('nav button[data-v="vSky"]').click();setFocus(id);}
 function openCompany(name){
-  const c=byName[name]; if(!c)return;
-  document.getElementById('dt_').textContent=c.n;
-  document.getElementById('ds_').innerHTML=esc(c.sec)+' · '+esc(c.hq||'—')+
-    ' · <span class="confbadge c'+c.conf+'">'+esc(c.conf)+' confidence</span>';
-  let h='<div class="kv"><span>Disruption score <b>'+nn(c.epi)+'</b></span><span>Tier <b>'+esc(c.tier)+'</b></span>'+
-    '<span>Position <b>'+esc(c.quad)+'</b></span>'+(c.hz?'<span>Horizon <b>'+esc(c.hz)+'</b></span>':'')+
-    (c.founded?'<span>Founded <b>'+c.founded+'</b></span>':'')+'</div>';
-  h+='<div class="gauges">'+gauge('Willing',c.w,S2)+gauge('Distribution',c.d,S1)+gauge('AI',c.ai,S3)+gauge('Overall',c.epi,'#9ec5f4')+'</div>';
-  const pl=c.pill, pk=[['player','Player',S1],['product','Product',S2],['wallet','Wallet',S3]];
-  h+='<h4>Pillars held</h4><div class="kv">'+pk.map(p=>'<span style="'+(pl[p[0]]?'color:#fff;border-color:'+p[2]:'')+'">'+(pl[p[0]]?'✓ ':'✕ ')+p[1]+'</span>').join('')+'</div>';
-  h+='<h4>Player journey covered</h4><div class="jstrip">'+D.stages.map((s,i)=>'<span class="jseg'+(c.vc[i]?' on':'')+'">'+esc(s)+'</span>').join('')+'</div>';
-  if(c.biz)h+='<h4>Business model</h4><div class="callout">'+esc(c.biz)+'</div>';
-  if(c.imp)h+='<h4>Effect on the incumbent model</h4><div class="callout imp">'+esc(c.imp)+'</div>';
-  if(c.gap)h+='<h4>What it still lacks</h4><div class="callout gap">'+esc(c.gap)+'</div>';
-  h+='<h4>Scored signals — click any row for the reasoning</h4>';
-  h+='<div class="sgrp">Willingness to disrupt</div>'+sigRows(c,'w',D.labels.w,'W');
-  h+='<div class="sgrp">Distribution readiness</div>'+sigRows(c,'d',D.labels.d,'D');
-  h+='<div class="sgrp">AI readiness</div>'+sigRows(c,'ai',D.labels.ai,'AI');
-  const fin=[]; if(c.rev)fin.push('<span>Revenue <b>'+esc(c.rev)+'</b></span>');
-  if(c.sv)fin.push('<span>Survival <b>'+esc(c.sv)+'</b></span>');
-  if(c.fin!=null)fin.push('<span>Financial health <b>'+c.fin+'%</b></span>');
-  if(fin.length)h+='<h4>Financial</h4><div class="kv">'+fin.join('')+'</div>';
-  if(c.lic)h+='<h4>Licensed in</h4><div class="callout">'+esc(c.lic)+'</div>';
-  if(c.par)h+='<h4>Named partners</h4><div class="callout">'+esc(c.par)+'</div>';
-  if(c.links&&c.links.length)h+='<h4>Sources ('+c.links.length+')</h4><ul class="srcs">'+
-    c.links.map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(u)+'</a></li>').join('')+'</ul>';
-  const db=document.getElementById('db_'); db.innerHTML=h; db.scrollTop=0;
-  db.querySelectorAll('.sr .top').forEach(t=>t.onclick=()=>t.parentElement.classList.toggle('open'));
-  document.getElementById('drawer').classList.add('on');
-  document.getElementById('scrim').classList.add('on');
+ const c=byName[name];if(!c)return;
+ const sc=SECCOL[c.sec]||'#9fb0cc';
+ document.getElementById('dt_').textContent=c.n;
+ document.getElementById('ds_').innerHTML='<span class="dot" style="background:'+sc+'"></span>'+esc(c.sec)+' · '+esc(c.hq||'—')+' · <span class="confbadge c'+c.conf+'">'+esc(c.conf)+' confidence</span>';
+ let h='<div class="kv"><span>Score <b>'+nn(c.epi)+'</b></span><span>Tier <b>'+esc(c.tier)+'</b></span><span>Position <b>'+esc(c.quad)+'</b></span>'+
+  (c.hz?'<span>Horizon <b>'+esc(c.hz)+'</b></span>':'')+(c.founded?'<span>Founded <b>'+c.founded+'</b></span>':'')+'</div>';
+ h+='<div class="gauges">'+gauge('Willing',c.w,'#e7a93c')+gauge('Distrib',c.d,'#4f8edc')+gauge('AI',c.ai,'#b388ff')+gauge('Score',c.epi,'#f0c84b')+'</div>';
+ const pk=[['player','Player'],['product','Product'],['wallet','Wallet']];
+ h+='<h4>Pillars held</h4><div class="kv">'+pk.map(p=>'<span style="'+(c.pill[p[0]]?'color:#5fd99a;border-color:#1f4a34':'')+'">'+(c.pill[p[0]]?'✓ ':'✕ ')+p[1]+'</span>').join('')+'</div>';
+ h+='<h4>Player journey covered</h4><div class="jstrip">'+D.stages.map((s,i)=>'<span class="jseg'+(c.vc[i]?' on':'')+'">'+esc(s)+'</span>').join('')+'</div>';
+ if(c.biz)h+='<h4>Business model</h4><div class="callout">'+esc(c.biz)+'</div>';
+ if(c.imp)h+='<h4>Effect on the incumbent model</h4><div class="callout imp">'+esc(c.imp)+'</div>';
+ if(c.gap)h+='<h4>What it still lacks</h4><div class="callout gap">'+esc(c.gap)+'</div>';
+ h+='<h4>Scored signals — click a row for the reasoning</h4>';
+ h+='<div class="sgrp">Willingness</div>'+sigRows(c,'w',D.labels.w,'W','#e7a93c');
+ h+='<div class="sgrp">Distribution readiness</div>'+sigRows(c,'d',D.labels.d,'D','#4f8edc');
+ h+='<div class="sgrp">AI readiness</div>'+sigRows(c,'ai',D.labels.ai,'AI','#b388ff');
+ const fin=[];if(c.rev)fin.push('<span>Revenue <b>'+esc(c.rev)+'</b></span>');
+ if(c.sv)fin.push('<span>Survival <b>'+esc(c.sv)+'</b></span>');
+ if(c.fin!=null)fin.push('<span>Health <b>'+c.fin+'%</b></span>');
+ if(fin.length)h+='<h4>Financial</h4><div class="kv">'+fin.join('')+'</div>';
+ if(c.lic)h+='<h4>Licensed in</h4><div class="callout">'+esc(c.lic)+'</div>';
+ h+=connRows(c.n);
+ if(c.links&&c.links.length)h+='<h4>Sources ('+c.links.length+')</h4><ul class="srcs">'+
+  c.links.map(u=>'<li><a href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+esc(u)+'</a></li>').join('')+'</ul>';
+ const db=document.getElementById('db_');db.innerHTML=h;db.scrollTop=0;
+ db.querySelectorAll('.sr .top').forEach(t=>t.onclick=()=>t.parentElement.classList.toggle('open'));
+ document.getElementById('drawer').classList.add('on');
+ document.getElementById('scrim').classList.add('on');
+}
+function openExternal(name){
+ document.getElementById('dt_').textContent=name;
+ document.getElementById('ds_').innerHTML='<span class="dot" style="background:'+EXTCOL+'"></span>partner entity — named in the research, not itself scored';
+ document.getElementById('db_').innerHTML=connRows(name)||'<p style="color:var(--mut)">No recorded links.</p>';
+ document.getElementById('drawer').classList.add('on');
+ document.getElementById('scrim').classList.add('on');
 }
 function closeDrawer(){document.getElementById('drawer').classList.remove('on');document.getElementById('scrim').classList.remove('on');}
-addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();clearFocus();}});
 
-/* ================= TILES ================= */
+/* ================= THREAT BOARD ================= */
 (function(){
-  const m=v=>Math.round(C.reduce((a,c)=>a+(c[v]||0),0)/C.length);
-  const full=C.filter(c=>c.pill.player&&c.pill.product&&c.pill.wallet).length;
-  const hi=C.filter(c=>c.tier==='High').length;
-  document.getElementById('tiles').innerHTML=
-   '<div class="tile"><div class="v">'+C.length+'</div><div class="k">Companies scored</div><div class="sub">every one with cited sources</div></div>'+
-   '<div class="tile"><div class="v">'+full+'</div><div class="k">Hold all three pillars</div><div class="sub">can bypass the incumbent entirely</div></div>'+
-   '<div class="tile"><div class="v">'+m('ai')+'%</div><div class="k">Mean AI readiness</div><div class="sub">the sector-wide blind spot</div></div>'+
-   '<div class="tile"><div class="v">'+hi+'</div><div class="k">High threat tier</div><div class="sub">disruption score ≥ 60</div></div>';
+ const mean=k=>Math.round(C.reduce((a,c)=>a+(c[k]||0),0)/C.length);
+ const full=C.filter(c=>c.pill.player&&c.pill.product&&c.pill.wallet).length;
+ document.getElementById('tiles').innerHTML=
+  '<div class="tile"><div class="v">'+C.length+'</div><div class="k">Companies</div><div class="sub">'+D.externals.length+' partner entities mapped</div></div>'+
+  '<div class="tile"><div class="v">'+C.filter(c=>c.tier==='High').length+'</div><div class="k">High threat</div><div class="sub">score ≥ 60</div></div>'+
+  '<div class="tile"><div class="v">'+full+'</div><div class="k">Full-stack</div><div class="sub">hold Player + Product + Wallet</div></div>'+
+  '<div class="tile"><div class="v">'+mean('ai')+'%</div><div class="k">Mean AI readiness</div><div class="sub">the sector-wide blind spot</div></div>';
 })();
-
-/* ================= POSITIONING MAP ================= */
-const MAP={w:900,h:640,l:64,r:28,t:26,b:56};
-let fSec='',fTier='',fQ='';
-function drawMap(){
-  const s=MAP, iw=s.w-s.l-s.r, ih=s.h-s.t-s.b;
-  const X=v=>s.l+(v/100)*iw, Y=v=>s.t+ih-(v/100)*ih;
-  let g='';
-  // quadrant washes (very low contrast, purely orienting)
-  g+='<rect x="'+X(60)+'" y="'+Y(100)+'" width="'+(X(100)-X(60))+'" height="'+(Y(60)-Y(100))+'" fill="#3987e5" opacity="0.05"/>';
-  // grid: solid hairlines only
-  for(let v=0;v<=100;v+=20){
-    g+='<line x1="'+X(v)+'" y1="'+s.t+'" x2="'+X(v)+'" y2="'+(s.t+ih)+'" stroke="var(--grid)" stroke-width="1"/>';
-    g+='<line x1="'+s.l+'" y1="'+Y(v)+'" x2="'+(s.l+iw)+'" y2="'+Y(v)+'" stroke="var(--grid)" stroke-width="1"/>';
-    g+='<text class="tick" x="'+X(v)+'" y="'+(s.t+ih+18)+'" text-anchor="middle">'+v+'</text>';
-    g+='<text class="tick" x="'+(s.l-10)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>';
-  }
-  // quadrant dividers at 60
-  g+='<line x1="'+X(60)+'" y1="'+s.t+'" x2="'+X(60)+'" y2="'+(s.t+ih)+'" stroke="var(--axis)" stroke-width="1"/>';
-  g+='<line x1="'+s.l+'" y1="'+Y(60)+'" x2="'+(s.l+iw)+'" y2="'+Y(60)+'" stroke="var(--axis)" stroke-width="1"/>';
-  g+='<text class="qname" x="'+(X(100)-8)+'" y="'+(Y(100)+18)+'" text-anchor="end">Imminent threat</text>';
-  g+='<text class="qname" x="'+(s.l+8)+'" y="'+(Y(100)+18)+'">Sleeping giant</text>';
-  g+='<text class="qname" x="'+(X(100)-8)+'" y="'+(Y(0)-10)+'" text-anchor="end">Aspirant</text>';
-  g+='<text class="qname" x="'+(s.l+8)+'" y="'+(Y(0)-10)+'">Dormant</text>';
-  g+='<text class="axl" x="'+(s.l+iw/2)+'" y="'+(s.h-14)+'" text-anchor="middle">Willingness to disrupt the model →</text>';
-  g+='<text class="axl" transform="translate(16,'+(s.t+ih/2)+') rotate(-90)" text-anchor="middle">Readiness to execute →</text>';
-  // incumbent benchmark
-  const ax=X(D.ama.w), ay=Y(D.ama.r);
-  g+='<g><line x1="'+(ax-9)+'" y1="'+ay+'" x2="'+(ax+9)+'" y2="'+ay+'" stroke="#c3c2b7" stroke-width="2"/>'+
-     '<line x1="'+ax+'" y1="'+(ay-9)+'" x2="'+ax+'" y2="'+(ay+9)+'" stroke="#c3c2b7" stroke-width="2"/>'+
-     '<text class="qlabel" x="'+(ax+13)+'" y="'+(ay+4)+'">Incumbent model today</text></g>';
-  // bubbles — ONE hue (scatter = all-pairs; sector is a filter, not a colour)
-  const vis=c=>(!fSec||c.sec===fSec)&&(!fTier||c.tier===fTier)&&(!fQ||c.n.toLowerCase().includes(fQ));
-  const sorted=C.slice().sort((a,b)=>b.scale-a.scale);
-  const labelled=new Set(C.slice().sort((a,b)=>(b.epi||0)-(a.epi||0)).slice(0,5).map(c=>c.n));
-  sorted.forEach(c=>{
-    if(c.w==null||c.r==null)return;
-    const x=X(c.w), y=Y(c.r), rad=Math.max(7,Math.min(24,c.scale*4.6));
-    const on=vis(c);
-    g+='<g class="bub'+(on?'':' dim')+'" data-n="'+esc(c.n)+'" tabindex="0" role="button" aria-label="'+esc(c.n)+'">'+
-       '<circle class="mark" cx="'+x+'" cy="'+y+'" r="'+rad+'" fill="'+S1+'" fill-opacity="0.72"/>'+
-       '<circle class="hit" cx="'+x+'" cy="'+y+'" r="'+Math.max(rad,14)+'"/>'+
-       (labelled.has(c.n)&&on?'<text x="'+(x+rad+5)+'" y="'+(y+4)+'">'+esc(c.n.replace(/ (plc|Inc\.|AB \(publ\)|Group.*|Limited|Ltd).*$/,''))+'</text>':'')+
-       '</g>';
-  });
-  document.getElementById('map').innerHTML=g;
-  const tip=document.getElementById('tip'), wrap=document.getElementById('mapWrap');
-  document.querySelectorAll('#map .bub').forEach(el=>{
-    const c=byName[el.dataset.n];
-    const show=e=>{const r=wrap.getBoundingClientRect();
-      tip.style.display='block';
-      tip.style.left=Math.min(r.width-300,e.clientX-r.left+14)+'px';
-      tip.style.top=(e.clientY-r.top+12)+'px';
-      tip.innerHTML='<b>'+esc(c.n)+'</b><div class="m">'+esc(c.sec)+'</div>'+
-        '<div style="margin-top:5px">Willingness <b>'+nn(c.w)+'</b> · Readiness <b>'+nn(c.r)+'</b></div>'+
-        '<div>Disruption score <b>'+nn(c.epi)+'</b> · '+esc(c.quad)+'</div>';};
-    el.onmousemove=show; el.onmouseenter=show;
-    el.onmouseleave=()=>tip.style.display='none';
-    el.onclick=()=>openCompany(c.n);
-    el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openCompany(c.n);}};
-  });
-  document.getElementById('mapLegend').innerHTML=
-    '<span><span class="sw" style="background:'+S1+';opacity:.72"></span>Company — bubble size = scale (market cap / valuation / funding)</span>'+
-    '<span style="color:var(--muted)">✛ incumbent benchmark</span>'+
-    '<span style="color:var(--muted)">'+C.filter(vis).length+' of '+C.length+' shown</span>';
-}
-(function(){
-  const sec=document.getElementById('fSec'), tier=document.getElementById('fTier');
-  sec.innerHTML='<option value="">All segments</option>'+D.sectors.map(s=>'<option>'+esc(s)+'</option>').join('');
-  tier.innerHTML='<option value="">All tiers</option>'+['High','Medium','Low'].map(t=>'<option>'+t+'</option>').join('');
-  sec.onchange=e=>{fSec=e.target.value;drawMap()};
-  tier.onchange=e=>{fTier=e.target.value;drawMap()};
-  document.getElementById('fQ').oninput=e=>{fQ=e.target.value.toLowerCase().trim();drawMap()};
-  drawMap();
-})();
-
-/* ================= SIGNAL MATRIX ================= */
-let mxSort='epi', mxGroup=false;
-function drawMx(){
-  const labs=[...D.labels.w.map((l,i)=>['W'+(i+1),l,'w',i]),
-              ...D.labels.d.map((l,i)=>['D'+(i+1),l,'d',i]),
-              ...D.labels.ai.map((l,i)=>['AI'+(i+1),l,'ai',i])];
-  let rows=C.slice();
-  if(mxSort==='n')rows.sort((a,b)=>a.n.localeCompare(b.n));
-  else rows.sort((a,b)=>(b[mxSort]||0)-(a[mxSort]||0));
-  if(mxGroup)rows.sort((a,b)=>D.sectors.indexOf(a.sec)-D.sectors.indexOf(b.sec)||(b.epi||0)-(a.epi||0));
-  let h='<thead><tr><th class="co">Company</th>';
-  labs.forEach((L,i)=>{h+='<th class="rot'+((L[0]==='D1'||L[0]==='AI1')?' gapl':'')+'"><span>'+esc(L[0]+' · '+L[1])+'</span></th>';});
-  h+='<th style="padding-left:8px">Score</th></tr></thead><tbody>';
-  rows.forEach(c=>{
-    h+='<tr><th class="co" data-n="'+esc(c.n)+'">'+esc(c.n)+'</th>';
-    labs.forEach(L=>{
-      const v=c.sig[L[2]][L[3]];
-      const cls=(L[0]==='D1'||L[0]==='AI1')?' gapl':'';
-      if(v==null)h+='<td class="null'+cls+'" title="not disclosed">–</td>';
-      else h+='<td class="'+cls.trim()+'" style="background:'+RAMP[v]+';color:'+(v>=3?'#0b0b0b':'#dfe9f7')+'" data-n="'+esc(c.n)+'" data-k="'+L[0]+'" data-l="'+esc(L[1])+'" data-v="'+v+'">'+v+'</td>';
-    });
-    h+='<td style="background:none;color:var(--ink);padding-left:8px;font-variant-numeric:tabular-nums">'+nn(c.epi)+'</td></tr>';
-  });
-  const t=document.getElementById('mx'); t.innerHTML=h+'</tbody>';
-  t.querySelectorAll('th.co').forEach(el=>el.onclick=()=>openCompany(el.dataset.n));
-  t.querySelectorAll('td[data-k]').forEach(el=>el.onclick=()=>{
-    const c=byName[el.dataset.n], why=c.just[el.dataset.k];
-    const tip=document.getElementById('tip');
-    openCompany(c.n);
-    setTimeout(()=>{const row=document.querySelector('#db_ .sr[data-k="'+el.dataset.k+'"]');
-      if(row){row.classList.add('open');row.scrollIntoView({block:'center',behavior:'smooth'});}},60);
-  });
-}
-document.getElementById('mxSort').onchange=e=>{mxSort=e.target.value;drawMx()};
-document.getElementById('mxSecToggle').onclick=e=>{mxGroup=!mxGroup;
-  e.target.classList.toggle('on',mxGroup);e.target.textContent='Group by segment: '+(mxGroup?'on':'off');drawMx()};
-drawMx();
-
-/* ================= PILLARS ================= */
-(function(){
-  const P=D.frame.pillars, keys=Object.keys(P);
-  const full=C.filter(c=>c.pill.player&&c.pill.product&&c.pill.wallet);
-  const two=C.filter(c=>Object.values(c.pill).filter(Boolean).length===2);
-  const one=C.filter(c=>Object.values(c.pill).filter(Boolean).length<=1);
-  document.getElementById('pillIntro').innerHTML=
-    'A company needs all three to run a betting relationship end to end without a licensed incumbent: <b>Player</b> (owns the intent moment), <b>Product</b> (owns odds, markets and games) and <b>Wallet</b> (licensed money in and out). Holding two means one acquisition or partnership away.';
-  document.getElementById('pillTiles').innerHTML=
-   '<div class="tile"><div class="v" style="color:'+S1+'">'+full.length+'</div><div class="k">Full stack</div><div class="sub">all three pillars</div></div>'+
-   '<div class="tile"><div class="v" style="color:'+S2+'">'+two.length+'</div><div class="k">One move away</div><div class="sub">hold two of three</div></div>'+
-   '<div class="tile"><div class="v" style="color:var(--muted)">'+one.length+'</div><div class="k">Single-pillar or none</div><div class="sub">structurally dependent</div></div>';
-  const badge=c=>'<span class="pillbadge">'+[['player',S1],['product',S2],['wallet',S3]].map(p=>
-    '<i style="background:'+(c.pill[p[0]]?p[1]:'#2a2a28')+'" title="'+p[0]+'"></i>').join('')+'</span>';
-  const col=(title,list,note)=>'<div class="pcol"><h3>'+esc(title)+' <span style="color:var(--muted);font-weight:400">'+list.length+'</span></h3>'+
-    '<div style="color:var(--muted);font-size:12px;margin-bottom:9px">'+esc(note)+'</div>'+
-    list.map(c=>'<div class="prow" data-n="'+esc(c.n)+'">'+badge(c)+'<span class="nm">'+esc(c.n)+'</span><span class="ep">'+nn(c.epi)+'</span></div>').join('')+'</div>';
-  document.getElementById('pillGrid').innerHTML=
-    col('Full stack',full,'Can run the whole relationship alone')+
-    col('One move away',two,'A single deal completes the bypass')+
-    col('Dependent',one,'Needs the incumbent rails');
-  document.querySelectorAll('#pillGrid .prow').forEach(el=>el.onclick=()=>openCompany(el.dataset.n));
-})();
-
-/* ================= DATA TABLE ================= */
-let dtK='epi', dtAsc=false;
+let dtK='epi',dtAsc=false;
 function drawDt(){
-  const cols=[['n','Company'],['sec','Segment'],['epi','Score'],['w','Will%'],['d','Dist%'],['ai','AI%'],
-              ['tier','Tier'],['quad','Position'],['sv','Survival'],['conf','Confidence']];
-  const rows=C.slice().sort((a,b)=>{let x=a[dtK],y=b[dtK];
-    if(typeof x==='string'||typeof y==='string'){x=String(x||'');y=String(y||'');return (x>y?1:x<y?-1:0)*(dtAsc?1:-1);}
-    return ((x||0)-(y||0))*(dtAsc?1:-1);});
-  let h='<thead><tr>'+cols.map(c=>'<th data-k="'+c[0]+'">'+c[1]+(dtK===c[0]?(dtAsc?' ▲':' ▼'):'')+'</th>').join('')+'</tr></thead><tbody>';
-  rows.forEach(c=>{h+='<tr data-n="'+esc(c.n)+'"><td><b>'+esc(c.n)+'</b></td><td style="color:var(--ink2)">'+esc(c.sec)+'</td>'+
-    '<td>'+nn(c.epi)+'</td><td>'+nn(c.w)+'</td><td>'+nn(c.d)+'</td><td>'+nn(c.ai)+'</td>'+
-    '<td><span class="pill p'+esc(c.tier)+'">'+esc(c.tier)+'</span></td><td style="color:var(--ink2)">'+esc(c.quad)+'</td>'+
-    '<td style="color:var(--ink2)">'+esc(c.sv||'–')+'</td><td><span class="confbadge c'+c.conf+'">'+esc(c.conf)+'</span></td></tr>';});
-  const t=document.getElementById('dt'); t.innerHTML=h+'</tbody>';
-  t.querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;
-    if(dtK===k)dtAsc=!dtAsc;else{dtK=k;dtAsc=(k==='n'||k==='sec');}drawDt();});
-  t.querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>openCompany(tr.dataset.n));
+ const cols=[['n','Company'],['sec','Constellation'],['epi','Score'],['w','Will%'],['d','Dist%'],['ai','AI%'],['tier','Tier'],['quad','Position'],['conf','Confidence']];
+ const rows=C.slice().sort((a,b)=>{let x=a[dtK],y=b[dtK];
+  if(typeof x==='string'||typeof y==='string'){x=String(x||'');y=String(y||'');return (x>y?1:x<y?-1:0)*(dtAsc?1:-1);}
+  return ((x||0)-(y||0))*(dtAsc?1:-1);});
+ let h='<thead><tr>'+cols.map(c=>'<th data-k="'+c[0]+'">'+c[1]+(dtK===c[0]?(dtAsc?' ▲':' ▼'):'')+'</th>').join('')+'</tr></thead><tbody>';
+ rows.forEach(c=>{h+='<tr data-n="'+esc(c.n)+'"><td><span class="dot" style="background:'+(SECCOL[c.sec]||'#999')+'"></span><b>'+esc(c.n)+'</b></td>'+
+  '<td style="color:var(--tx2)">'+esc(c.sec)+'</td><td>'+nn(c.epi)+'</td><td>'+nn(c.w)+'</td><td>'+nn(c.d)+'</td><td>'+nn(c.ai)+'</td>'+
+  '<td><span class="pill p'+esc(c.tier)+'">'+esc(c.tier)+'</span></td><td style="color:var(--tx2)">'+esc(c.quad)+'</td>'+
+  '<td><span class="confbadge c'+c.conf+'">'+esc(c.conf)+'</span></td></tr>';});
+ const t=document.getElementById('dt');t.innerHTML=h+'</tbody>';
+ t.querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;
+  if(dtK===k)dtAsc=!dtAsc;else{dtK=k;dtAsc=(k==='n'||k==='sec');}drawDt();});
+ t.querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>openCompany(tr.dataset.n));
 }
 drawDt();
 
 /* ================= FINDINGS & METHOD ================= */
-document.getElementById('findings').innerHTML=D.findings.map((f,i)=>
-  '<div class="fcard"><h3>'+(i+1)+'. '+esc(f.t)+'</h3><p>'+esc(f.x)+'</p><div class="ev"><b>Evidence:</b> '+esc(f.e)+'</div></div>').join('');
-
-document.getElementById('method').innerHTML=
- '<p><b>The question.</b> '+esc(D.frame.title)+' The incumbent under threat is '+esc(D.frame.incumbent)+'.</p>'+
- '<h3>How each company is scored</h3>'+
- '<p>Every company is scored 0–5 on 18 signals in three groups — willingness to disrupt the model (5), distribution readiness (6) and AI readiness (7) — against fixed anchors defined before research began, so a 3 means the same thing for every company. Those roll up with fixed weights:</p>'+
- '<ul><li><code>Readiness = ½ Distribution + ½ AI</code></li>'+
- '<li><code>Disruption score = 0.4 × Willingness + 0.6 × Readiness</code></li>'+
- '<li>Bands: ≥60 High · ≥40 Medium · below that Low. Position is the 60/60 split of the two axes.</li></ul>'+
- '<p>Scores measure fit to <i>this question</i>, not company size. A large operator with no appetite to attack its own funnel scores low on willingness by design — which is why several household names sit in the lower half.</p>'+
- '<h3>Where the numbers come from</h3>'+
- '<p>Each company was researched against public sources — investor relations, filings, recent trade press — and every one of the 18 scores carries a written justification plus the source URLs behind it. Open any company and click a signal row to see the reasoning; the sources are listed at the bottom of the card. Each row also carries a confidence grade reflecting how much public evidence was available.</p>'+
- '<h3>Honest limitations</h3>'+
- '<ul><li>Scores are <b>researched estimates</b>, not audited figures. They are transparent and traceable, not authoritative.</li>'+
- '<li>Private companies disclose less, so their rows lean on inference — marked as lower confidence.</li>'+
- '<li>This is a deliberate deep sample: '+D.meta.count+' companies spanning every segment of the value chain, each fully researched, rather than a thin census.</li>'+
- '<li>The scoring model is inherited from a prior landscape build and applied unchanged, so results stay comparable across industries.</li></ul>';
-
 (function(){
-  const f=document.getElementById('foot'); let h='<span>Built by <b style="color:var(--ink2)">'+esc(D.author)+'</b></span>';
-  if(D.linkedin)h+='<a href="'+esc(D.linkedin)+'" target="_blank" rel="noopener noreferrer">LinkedIn</a>';
-  if(D.github)h+='<a href="'+esc(D.github)+'" target="_blank" rel="noopener noreferrer">Source &amp; data on GitHub</a>';
-  h+='<span style="margin-left:auto">'+D.meta.count+' companies · dataset '+D.meta.date+' · build '+D.meta.built+'</span>';
-  f.innerHTML=h;
+ const mean=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;
+ const ops=C.filter(c=>c.sec==='Operator (B2C)');
+ const chal=C.filter(c=>c.sec==='AI-native & prediction markets');
+ const b2b=C.filter(c=>c.sec==='B2B supplier & platform');
+ const full=C.filter(c=>c.pill.player&&c.pill.product&&c.pill.wallet);
+ const two=C.filter(c=>Object.values(c.pill).filter(Boolean).length===2);
+ const aiTop=C.slice().sort((a,b)=>(b.ai||0)-(a.ai||0))[0];
+ const F=[
+  {t:'The incumbents are structurally unwilling to disrupt themselves',
+   x:'The '+ops.length+' licensed operators average '+mean(ops.map(c=>c.w))+'% on willingness — the lowest of any constellation — while the prediction-market and AI-native entrants average '+mean(chal.map(c=>c.w))+'%. The operators are what is being disrupted, not the disruptors.',
+   e:ops.slice().sort((a,b)=>(a.w||0)-(b.w||0)).slice(0,4).map(c=>c.n+' W'+c.w).join(', ')},
+  {t:'AI readiness is the sector\'s shared blind spot',
+   x:'Mean AI readiness across all '+C.length+' companies is '+mean(C.map(c=>c.ai))+'% — far below willingness and distribution. Not one company in the sample has adopted any agentic-commerce protocol. iGaming talks about AI far more than it ships it.',
+   e:'highest: '+aiTop.n+' at '+aiTop.ai+'%'},
+  {t:'Only '+full.length+' companies hold the full stack — and half are challengers',
+   x:'Player + Product + Wallet together let a company run the betting relationship end to end. Just '+full.length+' of '+C.length+' hold all three: '+full.map(c=>c.n).join(', ')+'. Two are incumbent-scale; two assembled the same stack from outside the licensed model.',
+   e:full.map(c=>c.n+' ('+c.sec+')').join(', ')},
+  {t:two.length+' companies sit one move from a complete bypass',
+   x:'They hold two of the three pillars — for most, the missing piece is the wallet or licensed supply, exactly the gap one acquisition or partnership closes. The next structural shift comes from here, not from the companies already at the top.',
+   e:two.slice(0,5).map(c=>c.n+' (missing '+Object.keys(c.pill).filter(k=>!c.pill[k]).join('/')+')').join(', ')},
+  {t:'The B2B rail owns the content but never touches the player',
+   x:'The '+b2b.length+' suppliers score strongly on product and platform yet near-zero on owned audience — they arm the operators rather than competing with them, which makes them the quiet chokepoint of the whole sky.',
+   e:b2b.slice(0,4).map(c=>c.n+' (W'+c.w+'/D'+c.d+')').join(', ')}];
+ document.getElementById('findings').innerHTML=F.map((f,i)=>
+  '<div class="fcard"><h3>'+(i+1)+'. '+esc(f.t)+'</h3><p>'+esc(f.x)+'</p><div class="ev"><b>Evidence:</b> '+esc(f.e)+'</div></div>').join('');
+ document.getElementById('method').innerHTML=
+  '<p><b>The question.</b> '+esc(D.frame.title)+'. The incumbent under threat: '+esc(D.frame.incumbent)+'.</p>'+
+  '<h3>How the sky is drawn</h3>'+
+  '<p>Each of the '+C.length+' companies is a star — sized by company scale, coloured by constellation (its role in the industry), ringed in red when it scores High threat. The faint lines join each constellation\'s stars; the small grey satellites are the '+D.externals.length+' partners, vendors and counterparties named in the research, connected to the companies that named them.</p>'+
+  '<h3>How each company is scored</h3>'+
+  '<p>18 signals, each 0–5 against fixed anchors defined before research began: willingness to disrupt (5), distribution readiness (6), AI readiness (7). They roll up with fixed weights:</p>'+
+  '<ul><li><code>Readiness = ½ Distribution + ½ AI</code></li>'+
+  '<li><code>Disruption score = 0.4 × Willingness + 0.6 × Readiness</code></li>'+
+  '<li>Bands: ≥60 High · ≥40 Medium · below Low.</li></ul>'+
+  '<p>The score measures fit to <i>this question</i>, not size — a giant with no appetite to attack its own funnel scores low by design.</p>'+
+  '<h3>Where the numbers come from</h3>'+
+  '<p>Every score carries a written justification and every company cites its sources — open any star and click a signal row to see the reasoning; the links sit at the bottom of the dossier. Rows carry a confidence grade for how much public evidence was available. These are researched estimates: transparent and traceable, not audited figures.</p>';
+ let h='<span>Built by <b style="color:var(--tx2)">'+esc(D.author)+'</b></span>';
+ if(D.linkedin)h+='<a href="'+esc(D.linkedin)+'" target="_blank" rel="noopener noreferrer">LinkedIn</a>';
+ if(D.github)h+='<a href="'+esc(D.github)+'" target="_blank" rel="noopener noreferrer">Source &amp; data on GitHub</a>';
+ h+='<span style="margin-left:auto">dataset '+D.meta.date+' · build '+D.meta.built+'</span>';
+ document.getElementById('foot2').innerHTML=h;
 })();
+
+initSky();
 </script></body></html>"""
 
 VIZ.mkdir(exist_ok=True)
 out = HTML.replace("__DATA__", json.dumps(payload, ensure_ascii=False))
 (VIZ / f"{INDUSTRY}.html").write_text(out, encoding="utf-8")
-print(f"viz/{INDUSTRY}.html written: {len(out)//1024} KB, {len(comp)} companies, {len(FINDINGS)} findings")
+print(f"viz/{INDUSTRY}.html written: {len(out)//1024} KB")
 if not LINKEDIN_URL:
-    print("NOTE: LINKEDIN_URL is empty — footer renders name only. Set it in this script to add the link.")
+    print("NOTE: LINKEDIN_URL empty — footer renders name only.")
