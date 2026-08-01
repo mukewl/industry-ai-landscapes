@@ -221,6 +221,7 @@ HTML = r"""<!DOCTYPE html>
 @keyframes viewIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 *{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--plane)}   /* html must carry it too, or a short view shows white canvas */
 body{background:var(--plane);color:var(--ink);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
 a{color:var(--s1)}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
